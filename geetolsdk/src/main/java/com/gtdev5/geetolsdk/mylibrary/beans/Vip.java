@@ -13,6 +13,16 @@ public class Vip  implements Serializable {
     private int count;
     private String time;
     private boolean isout;
+    private String viptag;
+
+
+    public String getViptag() {
+        return viptag;
+    }
+
+    public void setViptag(String viptag) {
+        this.viptag = viptag;
+    }
 
     public int getCount() {
         return count;
