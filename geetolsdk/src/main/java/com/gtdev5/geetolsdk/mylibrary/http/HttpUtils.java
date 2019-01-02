@@ -11,8 +11,10 @@ import com.google.gson.JsonSyntaxException;
 import com.gtdev5.geetolsdk.mylibrary.callback.BaseCallback;
 import com.gtdev5.geetolsdk.mylibrary.callback.DataCallBack;
 import com.gtdev5.geetolsdk.mylibrary.contants.API;
+import com.gtdev5.geetolsdk.mylibrary.contants.Contants;
 import com.gtdev5.geetolsdk.mylibrary.util.CPResourceUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.MapUtils;
+import com.gtdev5.geetolsdk.mylibrary.util.SpUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.Utils;
 
 import java.io.IOException;
@@ -59,6 +61,8 @@ public class HttpUtils {
     private boolean isHave;
 
     private Gson gson;
+    
+    private String commonUrl;
 
     private HttpUtils(){
         try {
@@ -68,10 +72,14 @@ public class HttpUtils {
             mHandler = new Handler(Looper.getMainLooper());
             gson = new Gson();
             alga = MessageDigest.getInstance("SHA-1");
+            //初始化域名
+            commonUrl = SpUtils.getInstance().getString(Contants.COMMON_URL,commonUrl);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    
 
     public static HttpUtils getInstance(){
         if (mHttpUtils == null){
@@ -128,7 +136,7 @@ public class HttpUtils {
         boolean isFirst = true;
         switch (type){
             case GET_HTTP_TYPE:
-                request = new Request.Builder().url(API.COMMON_URL+url).build();
+                request = new Request.Builder().url(commonUrl+url).build();
                 break;
             case POST_HTTP_TYPE:
                 /**
@@ -193,7 +201,7 @@ public class HttpUtils {
                 }
 
                     requestBody = builder.build();
-                request = new Request.Builder().url(API.COMMON_URL+ url).post(requestBody).build();
+                request = new Request.Builder().url(commonUrl+ url).post(requestBody).build();
                 break;
             case UPLOAD_HTTP_TYPE:
                 MultipartBody.Builder multipartBody = new MultipartBody.Builder("-----").setType(MultipartBody.FORM);
@@ -203,7 +211,7 @@ public class HttpUtils {
                     }
                     requestBody = multipartBody.build();
                 }
-                request = new Request.Builder().url(API.COMMON_URL+url).post(requestBody).build();
+                request = new Request.Builder().url(commonUrl+url).post(requestBody).build();
                 break;
                 default:
                     break;
@@ -413,7 +421,7 @@ public class HttpUtils {
 //    private <T> T inner_getRegister(Class<T> tClass){
 //        T t = null;
 //        RequestBody requestBody = getRequestBody(MapUtils.getRegistMap());
-//        t = backResponse(API.COMMON_URL + API.REGIST_DEVICE, requestBody, tClass);
+//        t = backResponse(commonUrl + API.REGIST_DEVICE, requestBody, tClass);
 //        return t;
 //    }
 //
@@ -436,7 +444,7 @@ public class HttpUtils {
 //    private <T> T inner_getUpdate(Class<T> tClass){
 //        T t = null;
 //        RequestBody requestBody = getRequestBody(MapUtils.getCurrencyMap());
-//        t = backResponse(API.COMMON_URL + API.UPDATE,requestBody,tClass);
+//        t = backResponse(commonUrl + API.UPDATE,requestBody,tClass);
 //        return t;
 //    }
 //
@@ -459,7 +467,7 @@ public class HttpUtils {
 //    private <T> T inner_getNews(Class<T> tClass){
 //        T t = null;
 //        RequestBody requestBody = getRequestBody(MapUtils.getNewMap());
-//        t = backResponse(API.COMMON_URL+API.GETNEW,requestBody,tClass);
+//        t = backResponse(commonUrl+API.GETNEW,requestBody,tClass);
 //        return t;
 //    }
 //
@@ -486,7 +494,7 @@ public class HttpUtils {
 //    private <T> T inner_getFeedBack(Class<T>tClass,String content,String phone){
 //        T t = null;
 //        RequestBody requestBody = getRequestBody(MapUtils.getFeedBack(content, phone));
-//        t = backResponse(API.COMMON_URL+API.FEEDBACK,requestBody,tClass);
+//        t = backResponse(commonUrl+API.FEEDBACK,requestBody,tClass);
 //        return t;
 //    }
     /**---------------------------------------------------------------------------分割线-------------------------------------------------------------------------*/
@@ -497,7 +505,7 @@ public class HttpUtils {
      * @param callback      回调函数
      */
     public void postGetAppUrl(long apid,BaseCallback callback){
-        post(API.COMMON_URL+API.GET_APPURL,MapUtils.getAppUrlMap(apid),callback);
+        post(commonUrl+API.GET_APPURL,MapUtils.getAppUrlMap(apid),callback);
     }
 
     /**
@@ -505,7 +513,7 @@ public class HttpUtils {
      * @param callback      回调函数
      */
     public void postAddService(String title,String descibe,String type,String img,BaseCallback callback){
-        post(API.COMMON_URL+API.ADD_SERVICE,MapUtils.getAddServiceMap(title,descibe,type,img),callback);
+        post(commonUrl+API.ADD_SERVICE,MapUtils.getAddServiceMap(title,descibe,type,img),callback);
     }
 
 
@@ -516,7 +524,7 @@ public class HttpUtils {
      * @param callback
      */
     public void postGetServices(int page,int limit,BaseCallback callback){
-        post(API.COMMON_URL+API.GET_SERVICE,MapUtils.getGetServiceMap(page,limit),callback);
+        post(commonUrl+API.GET_SERVICE,MapUtils.getGetServiceMap(page,limit),callback);
     }
 
     /**
@@ -525,7 +533,7 @@ public class HttpUtils {
      * @param callback
      */
     public void postGetServicesDetails(int service_id,BaseCallback callback){
-        post(API.COMMON_URL+API.GET_SERVICE_DETAILS,MapUtils.getServiceDetialsMap(service_id),callback);
+        post(commonUrl+API.GET_SERVICE_DETAILS,MapUtils.getServiceDetialsMap(service_id),callback);
     }
 
 
@@ -539,7 +547,7 @@ public class HttpUtils {
      * @param callback
      */
     public void postAddRepley(int service_id,String repley,String img,BaseCallback callback){
-        post(API.COMMON_URL+API.ADD_REPLEY,MapUtils.getAddRepleyMap(service_id,repley,img),callback);
+        post(commonUrl+API.ADD_REPLEY,MapUtils.getAddRepleyMap(service_id,repley,img),callback);
     }
 
     /**
@@ -548,7 +556,7 @@ public class HttpUtils {
      * @param callback
      */
     public void postEndService(int id,BaseCallback callback){
-        post(API.COMMON_URL+API.END_SERVICE,MapUtils.getServiceDetialsMap(id),callback);
+        post(commonUrl+API.END_SERVICE,MapUtils.getServiceDetialsMap(id),callback);
     }
 
     /**
@@ -556,7 +564,7 @@ public class HttpUtils {
      * @param callback      回调函数
      */
     public void postRegister(BaseCallback callback){
-        post(API.COMMON_URL+API.REGIST_DEVICE, MapUtils.getRegistMap(),callback);
+        post(commonUrl+API.REGIST_DEVICE, MapUtils.getRegistMap(),callback);
     }
 
     /**
@@ -564,7 +572,7 @@ public class HttpUtils {
      * @param callback      回调函数
      */
     public void postUpdate(BaseCallback callback){
-        post(API.COMMON_URL+API.UPDATE,MapUtils.getCurrencyMap(),callback);
+        post(commonUrl+API.UPDATE,MapUtils.getCurrencyMap(),callback);
     }
 
 
@@ -575,7 +583,7 @@ public class HttpUtils {
      * @param callback      回调函数
      */
     public void postNews(BaseCallback callback){
-        post(API.COMMON_URL+API.GETNEW,MapUtils.getNewMap(),callback);
+        post(commonUrl+API.GETNEW,MapUtils.getNewMap(),callback);
     }
 
     /**
@@ -585,7 +593,7 @@ public class HttpUtils {
      * @param callback      回调函数
      */
     public void postFeedBack(String content,String phone,BaseCallback callback){
-        post(API.COMMON_URL+API.FEEDBACK,MapUtils.getFeedBack(content,phone),callback);
+        post(commonUrl+API.FEEDBACK,MapUtils.getFeedBack(content,phone),callback);
     }
 
     /**
@@ -597,7 +605,7 @@ public class HttpUtils {
      * @param callback      回调函数
      */
     public void postOrder(int type,int pid,float amount,int pway,BaseCallback callback){
-        post(API.COMMON_URL+API.ORDER_ONE,MapUtils.getOrder(type,pid,amount,pway),callback);
+        post(commonUrl+API.ORDER_ONE,MapUtils.getOrder(type,pid,amount,pway),callback);
     }
 
 
@@ -611,7 +619,7 @@ public class HttpUtils {
      * @param callback      回调函数
      */
     public void PostOdOrder(int type,int pid,float amount,int pway,BaseCallback callback){
-        post(API.COMMON_URL+API.ORDER_OD,MapUtils.getOrder(type,pid,amount,pway),callback);
+        post(commonUrl+API.ORDER_OD,MapUtils.getOrder(type,pid,amount,pway),callback);
     }
 
     /**

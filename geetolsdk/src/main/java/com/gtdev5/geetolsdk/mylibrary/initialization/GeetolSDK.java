@@ -1,6 +1,8 @@
 package com.gtdev5.geetolsdk.mylibrary.initialization;
 
 import android.content.Context;
+
+import com.gtdev5.geetolsdk.mylibrary.contants.Contants;
 import com.gtdev5.geetolsdk.mylibrary.util.CPResourceUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.MapUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.SpUtils;
@@ -30,6 +32,10 @@ public class GeetolSDK {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    public static void init(Context context,String commurl){
+        init(context);
+        SpUtils.getInstance().putString(Contants.COMMON_URL,commurl);
     }
 
 }

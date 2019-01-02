@@ -15,4 +15,5 @@ public class Contants {
 
     public static final String CHANNEL = "channel";     //渠道名称
     public static final String CHANNEL_DEFAULT = "geetol";      //默认渠道号
+    public static final String COMMON_URL = "common_url";        //通用的网址
 }
