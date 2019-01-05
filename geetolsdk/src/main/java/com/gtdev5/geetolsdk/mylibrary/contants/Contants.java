@@ -1,5 +1,7 @@
 package com.gtdev5.geetolsdk.mylibrary.contants;
 
+import com.gtdev5.geetolsdk.mylibrary.initialization.GeetolSDK;
+
 /**
  * Created by cheng
  * PackageName ModelTest

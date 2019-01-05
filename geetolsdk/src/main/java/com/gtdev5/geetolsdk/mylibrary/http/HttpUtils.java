@@ -12,6 +12,7 @@ import com.gtdev5.geetolsdk.mylibrary.callback.BaseCallback;
 import com.gtdev5.geetolsdk.mylibrary.callback.DataCallBack;
 import com.gtdev5.geetolsdk.mylibrary.contants.API;
 import com.gtdev5.geetolsdk.mylibrary.contants.Contants;
+import com.gtdev5.geetolsdk.mylibrary.initialization.GeetolSDK;
 import com.gtdev5.geetolsdk.mylibrary.util.CPResourceUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.MapUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.SpUtils;
@@ -73,7 +74,7 @@ public class HttpUtils {
             gson = new Gson();
             alga = MessageDigest.getInstance("SHA-1");
             //初始化域名
-            commonUrl = SpUtils.getInstance().getString(Contants.COMMON_URL,commonUrl);
+            commonUrl = SpUtils.getInstance().getString(Contants.COMMON_URL,API.COMMON_URL);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -506,6 +507,7 @@ public class HttpUtils {
      */
     public void postGetAppUrl(long apid,BaseCallback callback){
         post(commonUrl+API.GET_APPURL,MapUtils.getAppUrlMap(apid),callback);
+
     }
 
     /**
