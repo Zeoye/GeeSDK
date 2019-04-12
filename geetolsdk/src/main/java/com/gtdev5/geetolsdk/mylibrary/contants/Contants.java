@@ -1,7 +1,5 @@
 package com.gtdev5.geetolsdk.mylibrary.contants;
 
-import com.gtdev5.geetolsdk.mylibrary.initialization.GeetolSDK;
-
 /**
  * Created by cheng
  * PackageName ModelTest
@@ -10,12 +8,14 @@ import com.gtdev5.geetolsdk.mylibrary.initialization.GeetolSDK;
  */
 
 public class Contants {
-
     public static final int BLUR_VALUE = 20;        //模糊
     public static final int CORNER_PADIUS = 20;     //圆角
     public static final float THUMB_SIZE = 0.5f;    //0-1之间     10%原图的大小
-
     public static final String CHANNEL = "channel";     //渠道名称
     public static final String CHANNEL_DEFAULT = "geetol";      //默认渠道号
     public static final String COMMON_URL = "common_url";        //通用的网址
+    public static final String CRESH_REPORT_ID = "cresh_report_id";     //错误报告的id
+    //public static final String ERROR_REPORT = "免费时长(分钟)";        //后台设置的开关名字为错误报告  则表示错误id
+    public static final String HAS_SET_FINAL_ERROR_REPORT = "has_set_final_error_report";//是否强行设置其他buglyid
+
 }

@@ -15,6 +15,9 @@ import android.os.Build;
 import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
+
+import com.gtdev5.geetolsdk.mylibrary.contants.Contants;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -314,5 +317,31 @@ public class Utils {
         return false;
     }
 
+    /**
+     * 某些软件有时候需要强行将本地设备id设置为指定值，一般用于需要登录的软件
+     * @param deviceID
+     */
+    public static void setLocalDeviceID(String deviceID){
+        if (TextUtils.isEmpty(deviceID)) {
+            throw new IllegalArgumentException("设备id不能为空");
+        }
+        //这里传false  sdk里就会认为用户没有给权限
+        SpUtils.getInstance().putBoolean("getdevice",false);
+        //存下登录获取的设备id
+        SpUtils.getInstance().putString("getDevicekey",deviceID);
+    }
+
+    /**
+     * 不使用服务器提供的buglyID 本地强行设置
+     * 如果buglyID为空则取消本地设置的buglyid
+     * @param buglyID
+     */
+    public static void setLocalBuglyID(String buglyID){
+        if (Utils.isEmpty(buglyID)){
+            SpUtils.getInstance().putBoolean(Contants.HAS_SET_FINAL_ERROR_REPORT,false);
+        }
+       SpUtils.getInstance().putBoolean(Contants.HAS_SET_FINAL_ERROR_REPORT,true);
+       SpUtils.getInstance().putString(Contants.CRESH_REPORT_ID,buglyID);
+    }
 
 }

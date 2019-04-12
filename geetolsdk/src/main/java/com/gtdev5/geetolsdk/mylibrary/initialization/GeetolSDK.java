@@ -1,12 +1,14 @@
 package com.gtdev5.geetolsdk.mylibrary.initialization;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.gtdev5.geetolsdk.mylibrary.contants.Contants;
 import com.gtdev5.geetolsdk.mylibrary.util.CPResourceUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.MapUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.SpUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.ToastUtils;
+import com.tencent.bugly.crashreport.CrashReport;
 
 /**
  * Created by cheng
@@ -29,13 +31,35 @@ public class GeetolSDK {
             CPResourceUtils.init(mContext);
             ToastUtils.init(mContext);
             MapUtils.init(mContext);
+
+            initCrashReport();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    public static Context getmContext() {
+        return mContext;
+    }
+
+    /**
+     * 初始化bug提交
+     */
+    private static void initCrashReport() {
+        String crashid = SpUtils.getInstance().getString(Contants.CRESH_REPORT_ID,"");
+        if (!TextUtils.isEmpty(crashid)){
+            CrashReport.initCrashReport(mContext,crashid,false);
+        }
+    }
+
     public static void init(Context context,String commurl){
         init(context);
         SpUtils.getInstance().putString(Contants.COMMON_URL,commurl);
     }
+
+
+
+
 
 }

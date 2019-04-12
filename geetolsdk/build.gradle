@@ -45,5 +45,7 @@ dependencies {
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'jp.wasabeef:glide-transformations:2.0.2'
     compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.30'
+    //腾讯bugly
+    implementation 'com.tencent.bugly:crashreport:latest.release'
 
 }

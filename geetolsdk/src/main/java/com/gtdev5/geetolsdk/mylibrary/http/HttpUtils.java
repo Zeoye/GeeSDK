@@ -2,21 +2,28 @@ package com.gtdev5.geetolsdk.mylibrary.http;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.gtdev5.geetolsdk.mylibrary.BuildConfig;
+import com.gtdev5.geetolsdk.mylibrary.beans.ResultBean;
+import com.gtdev5.geetolsdk.mylibrary.beans.Swt;
+import com.gtdev5.geetolsdk.mylibrary.beans.UpdateBean;
 import com.gtdev5.geetolsdk.mylibrary.callback.BaseCallback;
 import com.gtdev5.geetolsdk.mylibrary.callback.DataCallBack;
 import com.gtdev5.geetolsdk.mylibrary.contants.API;
 import com.gtdev5.geetolsdk.mylibrary.contants.Contants;
 import com.gtdev5.geetolsdk.mylibrary.initialization.GeetolSDK;
 import com.gtdev5.geetolsdk.mylibrary.util.CPResourceUtils;
+import com.gtdev5.geetolsdk.mylibrary.util.GsonUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.MapUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.SpUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.Utils;
+import com.tencent.bugly.Bugly;
 
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -293,12 +300,9 @@ public class HttpUtils {
         RequestBody requestBody = null;
         FormBody.Builder builder = new FormBody.Builder();
         resultMap = sortMapByKey(map);
-
         Log.e("请求参数：","map:"+resultMap.toString());
-
         String str="";
         int num = 0;
-
         boolean isFirst = true;
 
         /**
@@ -624,6 +628,8 @@ public class HttpUtils {
         post(commonUrl+API.ORDER_OD,MapUtils.getOrder(type,pid,amount,pway),callback);
     }
 
+
+
     /**
      *      内部提供的post请求方法
      * @param url           请求路径
@@ -631,6 +637,9 @@ public class HttpUtils {
      * @param callback      回调函数
      */
     public void post(String url, Map<String,String> params, final BaseCallback callback){
+        post(url,params,callback,"default");
+    }
+    public void post(String url, Map<String,String> params, final BaseCallback callback,String requestType){
         //请求之前调用(例如加载动画)
         callback.onRequestBefore();
           mOkHttpClient.newCall(getRequest(url,params)).enqueue(new Callback() {
@@ -645,6 +654,11 @@ public class HttpUtils {
                 if (response.isSuccessful()){
                     //返回成功回调
                     String result = response.body().string();
+                    //如果是注册设备，获取腾讯bugly 错误日子反馈平台
+                    if (requestType.equals(API.REGIST_DEVICE)){
+                        initCrashRePort(result);
+                    }
+
                     Log.e("请求数据：",result);
                     if (callback.mType == String.class){
                         //如果我们需要返回String类型
@@ -666,6 +680,36 @@ public class HttpUtils {
 
             }
         });
+
+    }
+
+    /**
+     * 初始化错误报告的参数（获取并保存腾讯buglyID）
+     * @param o
+     */
+    private void initCrashRePort(String o) {
+        try {
+            ResultBean resultBean = GsonUtils.getFromClass(o,ResultBean.class);
+            if (resultBean!=null&&resultBean.isIssucc()){
+                /*for (Swt swt:o.getSwt()){
+                    if (swt.getName().equals(Contants.ERROR_REPORT)){
+                        if (!TextUtils.isEmpty(swt.getVal2())){
+                            SpUtils.getInstance().putString(Contants.CRESH_REPORT_ID,swt.getVal2());
+                        }
+                    }
+                }*/
+                if (!TextUtils.isEmpty(resultBean.getCode())){
+                    if (SpUtils.getInstance().getBoolean(Contants.HAS_SET_FINAL_ERROR_REPORT,false))
+                    SpUtils.getInstance().putString(Contants.CRESH_REPORT_ID,resultBean.getCode());
+
+                    //注册后第一次初始化bugly
+                    Bugly.init(GeetolSDK.getmContext(),resultBean.getCode(),false);
+                    Log.d("geesdk-----------》","腾讯bugly初始化成功");
+                }
+            }
+        }catch (Exception e){
+            Log.e("geesdk-----------》","腾讯bugly初始化失败："+e.toString());
+        }
 
     }
 
