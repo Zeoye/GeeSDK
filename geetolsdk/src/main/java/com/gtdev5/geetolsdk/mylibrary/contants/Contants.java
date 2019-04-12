@@ -17,5 +17,6 @@ public class Contants {
     public static final String CRESH_REPORT_ID = "cresh_report_id";     //错误报告的id
     //public static final String ERROR_REPORT = "免费时长(分钟)";        //后台设置的开关名字为错误报告  则表示错误id
     public static final String HAS_SET_FINAL_ERROR_REPORT = "has_set_final_error_report";//是否强行设置其他buglyid
-
+    public static final String USER_ID = "user_id"; // 登录后返回的user_id
+    public static final String USER_KEY = "user_key"; // 登录后返回的ukey
 }

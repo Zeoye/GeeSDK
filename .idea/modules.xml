@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/GeeSDK.iml" filepath="$PROJECT_DIR$/GeeSDK.iml" />
+      <module fileurl="file://$PROJECT_DIR$/GeeSdk.iml" filepath="$PROJECT_DIR$/GeeSdk.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/geetolsdk/geetolsdk.iml" filepath="$PROJECT_DIR$/geetolsdk/geetolsdk.iml" />
     </modules>

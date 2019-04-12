@@ -77,7 +77,38 @@ public interface API {
      */
     public static String GET_APPURL = "appurl";
 
+    /**
+     * 获取验证码
+     */
+    public static String GET_VARCODE = "getvarcode";
 
+    /**
+     * 手机注册
+     */
+    public static String USER_REGISTER = "pub_user_reg";
 
+    /**
+     * 手机登陆
+     */
+    public static String USER_LOGIN = "pub_user_login";
 
+    /**
+     * 修改密码
+     */
+    public static String MODIFY_PWD = "pub_user_pwdchange";
+
+    /**
+     * 忘记密码
+     */
+    public static String FORGET_PWD = "pub_forget_pwd";
+
+    /**
+     * 设置头像
+     */
+    public static String SET_HEADING = "pub_set_heading";
+
+    /**
+     * 获取头像
+     */
+    public static String GET_HEADING = "pub_get_heading";
 }
