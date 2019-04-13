@@ -7,11 +7,10 @@ import java.io.Serializable;
  */
 
 public class LoginInfoBean implements Serializable {
-    private boolean issucc;            //调用是否成功
+    private boolean issucc;
     private String msg;
     private String code;
-    private String user_id; // 用户id
-    private String ukey; // 用户相关接口需要验证的一个参数
+    private LoginInfo data;
 
     public boolean isIssucc() {
         return issucc;
@@ -37,19 +36,11 @@ public class LoginInfoBean implements Serializable {
         this.code = code;
     }
 
-    public String getUser_id() {
-        return user_id;
+    public LoginInfo getData() {
+        return data;
     }
 
-    public void setUser_id(String user_id) {
-        this.user_id = user_id;
-    }
-
-    public String getUkey() {
-        return ukey;
-    }
-
-    public void setUkey(String ukey) {
-        this.ukey = ukey;
+    public void setData(LoginInfo data) {
+        this.data = data;
     }
 }

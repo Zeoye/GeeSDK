@@ -9,6 +9,8 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -16,9 +18,12 @@ import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.util.Base64;
 
 import com.gtdev5.geetolsdk.mylibrary.contants.Contants;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
@@ -362,10 +367,12 @@ public class Utils {
      *
      * @param userId 用户id
      * @param userKey 用户id
+     * @param img 头像数据
      */
-    public static void setLoginInfo(String userId, String userKey) {
+    public static void setLoginInfo(String userId, String userKey, String img) {
         SpUtils.getInstance().putString(Contants.USER_ID, userId);
         SpUtils.getInstance().putString(Contants.USER_KEY, userKey);
+        SpUtils.getInstance().putString(Contants.USER_HEAD, img);
     }
 
     /**
@@ -381,5 +388,79 @@ public class Utils {
      */
     public static String getUserKey() {
         return SpUtils.getInstance().getString(Contants.USER_KEY);
+    }
+
+    /**
+     * 获取用户头像
+     * @return
+     */
+    public static String getUserHead() {
+        return SpUtils.getInstance().getString(Contants.USER_HEAD);
+    }
+
+    /**
+     * 通过Base32将Bitmap转换成Base64字符串
+     *
+     * @param bitmap
+     * @return
+     */
+    public static String Bitmap2StrByBase64(Bitmap bitmap) {
+        String reslut = "";
+        ByteArrayOutputStream baos = null;
+        try {
+            if (bitmap != null) {
+                baos = new ByteArrayOutputStream();
+                /**
+                 * 压缩只对保存有效果bitmap还是原来的大小
+                 */
+                // bitmap = compressImage(bitmap);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                int options = 100;
+                while (baos.toByteArray().length / 1024 > 500) {  //循环判断如果压缩后图片是否大于100kb,大于继续压缩
+                    baos.reset();//重置baos即清空baos
+                    //第一个参数 ：图片格式 ，第二个参数： 图片质量，100为最高，0为最差  ，第三个参数：保存压缩后的数据的流
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, options, baos);//这里压缩options%，把压缩后的数据存放到baos中
+                    if (options > 5) {
+                        options -= 5;//每次都减少10
+                    } else {
+                        break;
+                    }
+                }
+                // 转换为字节数组
+                byte[] byteArray = baos.toByteArray();
+                reslut = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                baos.flush();
+                baos.close();
+                return reslut;
+                // 转换为字符串
+            } else {
+                return "";
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (baos != null) {
+                    baos.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return reslut;
+    }
+
+    /**
+     * base64字符串转bitmap
+     */
+    public static Bitmap Base64ToBitmap(String string) {
+        Bitmap bitmap = null;
+        try {
+            byte[] bitmapArray = Base64.decode(string, Base64.DEFAULT);
+            bitmap = BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bitmap;
     }
 }

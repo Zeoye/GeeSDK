@@ -9,11 +9,8 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.gtdev5.geetolsdk.mylibrary.BuildConfig;
 import com.gtdev5.geetolsdk.mylibrary.beans.LoginInfoBean;
 import com.gtdev5.geetolsdk.mylibrary.beans.ResultBean;
-import com.gtdev5.geetolsdk.mylibrary.beans.Swt;
-import com.gtdev5.geetolsdk.mylibrary.beans.UpdateBean;
 import com.gtdev5.geetolsdk.mylibrary.callback.BaseCallback;
 import com.gtdev5.geetolsdk.mylibrary.callback.DataCallBack;
 import com.gtdev5.geetolsdk.mylibrary.contants.API;
@@ -644,7 +641,7 @@ public class HttpUtils {
      * @param callback 回调函数
      */
     public void userLogin(String name, String pwd, BaseCallback callback) {
-        post(commonUrl + API.USER_LOGIN, MapUtils.userLogin(name, pwd), callback);
+        post(commonUrl + API.USER_LOGIN, MapUtils.userLogin(name, pwd), callback, API.USER_LOGIN);
     }
 
     /**
@@ -719,9 +716,11 @@ public class HttpUtils {
                         initCrashRePort(result);
                     } else if (requestType.equals(API.USER_LOGIN)) {
                         // 保存用户信息
-                        LoginInfoBean loginInfoBean = GsonUtils.getFromClass(result, LoginInfoBean.class);
-                        if (loginInfoBean != null && loginInfoBean.isIssucc()) {
-                            Utils.setLoginInfo(loginInfoBean.getUser_id(), loginInfoBean.getUkey());
+                        LoginInfoBean info = GsonUtils.getFromClass(result, LoginInfoBean.class);
+                        if (info != null && info.isIssucc()) {
+                            Utils.setLoginInfo(info.getData().getUser_id(),
+                                    info.getData().getUkey(),
+                                    info.getData().getHeadimg());
                         }
                     }
                     Log.e("请求数据：", result);
