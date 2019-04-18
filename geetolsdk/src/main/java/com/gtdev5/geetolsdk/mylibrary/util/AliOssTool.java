@@ -3,6 +3,7 @@ package com.gtdev5.geetolsdk.mylibrary.util;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.alibaba.sdk.android.oss.ClientConfiguration;
@@ -77,19 +78,25 @@ public class AliOssTool {
      * @param name 要下载的文件名称
      * @param savePath 要保存的文件地址
      */
-    public void downLoadFile(String name, String savePath, OssCallBack callBack) {
-        downLoadFile(name, savePath, "JPEG", callBack);
+    public void downLoadFile(String size, String name, String savePath, OssCallBack callBack) {
+        downLoadFile(size, aliOssBean.getBucketName(), name, savePath, "JPEG", callBack);
     }
 
     /**
      * 下载文件
+     * @param size 需要缩放的图片大小
+     * @param bucketName 设置仓库地址
      * @param name 要下载的文件名称
      * @param savePath 要保存的文件地址
      * @param suffix 要保存的文件后缀
+     * 参数参考：https://help.aliyun.com/document_detail/44688.html?spm=a2c4g.11186623.2.13.685d3331OwJyJD#concept-hxj-c4n-vdb
      */
-    public void downLoadFile(String name, String savePath, String suffix, OssCallBack ossCallBack) {
-        GetObjectRequest request = new GetObjectRequest(aliOssBean.getBucketName(), name);
-        // 异步上传，可以设置进度回调
+    public void downLoadFile(String size, String bucketName, String name, String savePath, String suffix, OssCallBack ossCallBack) {
+        GetObjectRequest request = new GetObjectRequest(bucketName, name);
+        if (!TextUtils.isEmpty(size)) {
+            request.setxOssProcess(size);
+        }
+        // 异步下载，可以设置进度回调
         request.setProgressListener((request1, currentSize, totalSize) -> {
             // 进度条回调
             if (mProgressCallBack != null) {
@@ -153,12 +160,22 @@ public class AliOssTool {
     }
 
     /**
-     * 上传文件
+     * 文件上传
      * @param name 名称
      * @param path 地址
      */
     public void upLoadFile(String name, String path, OssCallBack callBack) {
-        PutObjectRequest request = new PutObjectRequest(aliOssBean.getBucketName(), name, path);
+        upLoadFile(aliOssBean.getBucketName(), name, path, callBack);
+    }
+
+    /**
+     * 上传文件
+     * @param bucketName 仓库地址
+     * @param name 名称
+     * @param path 地址
+     */
+    public void upLoadFile(String bucketName, String name, String path, OssCallBack callBack) {
+        PutObjectRequest request = new PutObjectRequest(bucketName, name, path);
         // 异步上传，可以设置进度回调
         request.setProgressCallback((request1, currentSize, totalSize) -> {
             // 进度条回调
@@ -199,7 +216,16 @@ public class AliOssTool {
      * @param name 要删除的名字
      */
     public void deleteFile(String name, OssCallBack ossCallBack) {
-        DeleteObjectRequest request = new DeleteObjectRequest(aliOssBean.getBucketName(), name);
+        deleteFile(aliOssBean.getBucketName(), name, ossCallBack);
+    }
+
+    /**
+     * 删除文件
+     * @param bucketName 仓库地址
+     * @param name 要删除的名字
+     */
+    public void deleteFile(String bucketName, String name, OssCallBack ossCallBack) {
+        DeleteObjectRequest request = new DeleteObjectRequest(bucketName, name);
         // 异步删除
         OSSAsyncTask task = mOss.asyncDeleteObject(request, new OSSCompletedCallback<DeleteObjectRequest, DeleteObjectResult>() {
             @Override
