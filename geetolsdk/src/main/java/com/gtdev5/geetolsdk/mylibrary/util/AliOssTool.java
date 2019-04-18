@@ -3,8 +3,6 @@ package com.gtdev5.geetolsdk.mylibrary.util;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 
 import com.alibaba.sdk.android.oss.ClientConfiguration;
@@ -32,20 +30,18 @@ import java.io.OutputStream;
 
 /**
  * Created by ZL on 2019/4/18
+ *
+ * 阿里云文件操作工具
  */
 
 public class AliOssTool {
-    private static final int STATE_SUCCESS = 101; // 操作成功
-    private static final int STATE_FAIL = 102; // 操作失败
     private static AliOssTool aliOssTool;
     private static AliOssBean aliOssBean;
     OSS mOss;
     private Context mContext;
-    private OssCallBack mOssCallBack;
-    private MyHandler myHandler = new MyHandler();
     private ProgressCallBack mProgressCallBack;
 
-    private AliOssTool(Context context) {
+    public AliOssTool(Context context) {
         this.mContext = context;
         try {
             if (aliOssBean == null) {
@@ -77,24 +73,12 @@ public class AliOssTool {
     }
 
     /**
-     * 发送message
-     * @param what 类型
-     * @param o 值
-     */
-    private void sendMessage(int what, Object o) {
-        Message msg = myHandler.obtainMessage();
-        msg.what = what;
-        msg.obj = o;
-        myHandler.sendMessage(msg);
-    }
-
-    /**
      * 下载文件
      * @param name 要下载的文件名称
      * @param savePath 要保存的文件地址
      */
-    public void downLoadFile(String name, String savePath) {
-        downLoadFile(name, savePath, "JPEG");
+    public void downLoadFile(String name, String savePath, OssCallBack callBack) {
+        downLoadFile(name, savePath, "JPEG", callBack);
     }
 
     /**
@@ -103,7 +87,7 @@ public class AliOssTool {
      * @param savePath 要保存的文件地址
      * @param suffix 要保存的文件后缀
      */
-    public void downLoadFile(String name, String savePath, String suffix) {
+    public void downLoadFile(String name, String savePath, String suffix, OssCallBack ossCallBack) {
         GetObjectRequest request = new GetObjectRequest(aliOssBean.getBucketName(), name);
         // 异步上传，可以设置进度回调
         request.setProgressListener((request1, currentSize, totalSize) -> {
@@ -119,13 +103,17 @@ public class AliOssTool {
                 InputStream inputStream = result.getObjectContent();
                 Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
                 if (saveBitmap2File(bitmap, name, savePath, suffix)) {
-                    sendMessage(STATE_SUCCESS, name);
+                    if (ossCallBack != null) {
+                        ossCallBack.onSuccess(name);
+                    }
                 }
             }
 
             @Override
             public void onFailure(GetObjectRequest request, ClientException clientException, ServiceException serviceException) {
-                sendMessage(STATE_FAIL, name);
+                if (ossCallBack != null) {
+                    ossCallBack.onFailure(name);
+                }
                 if (clientException != null) {
                     // 本地异常如网络异常等
                     clientException.printStackTrace();
@@ -169,7 +157,7 @@ public class AliOssTool {
      * @param name 名称
      * @param path 地址
      */
-    public void upLoadFile(String name, String path) {
+    public void upLoadFile(String name, String path, OssCallBack callBack) {
         PutObjectRequest request = new PutObjectRequest(aliOssBean.getBucketName(), name, path);
         // 异步上传，可以设置进度回调
         request.setProgressCallback((request1, currentSize, totalSize) -> {
@@ -183,12 +171,16 @@ public class AliOssTool {
         OSSAsyncTask task = mOss.asyncPutObject(request, new OSSCompletedCallback<PutObjectRequest, PutObjectResult>() {
             @Override
             public void onSuccess(PutObjectRequest request, PutObjectResult result) {
-                sendMessage(STATE_SUCCESS, path);
+                if (callBack != null) {
+                    callBack.onSuccess(path);
+                }
             }
 
             @Override
             public void onFailure(PutObjectRequest request, ClientException clientException, ServiceException serviceException) {
-                sendMessage(STATE_FAIL, path);
+                if (callBack != null) {
+                    callBack.onFailure(path);
+                }
                 if (clientException != null) {
                     clientException.printStackTrace();
                 } else {
@@ -206,18 +198,22 @@ public class AliOssTool {
      * 删除文件
      * @param name 要删除的名字
      */
-    public void deleteFile(String name) {
+    public void deleteFile(String name, OssCallBack ossCallBack) {
         DeleteObjectRequest request = new DeleteObjectRequest(aliOssBean.getBucketName(), name);
         // 异步删除
         OSSAsyncTask task = mOss.asyncDeleteObject(request, new OSSCompletedCallback<DeleteObjectRequest, DeleteObjectResult>() {
             @Override
             public void onSuccess(DeleteObjectRequest request, DeleteObjectResult result) {
-                sendMessage(STATE_SUCCESS, name);
+                if (ossCallBack != null) {
+                    ossCallBack.onSuccess(name);
+                }
             }
 
             @Override
             public void onFailure(DeleteObjectRequest request, ClientException clientException, ServiceException serviceException) {
-                sendMessage(STATE_FAIL, name);
+                if (ossCallBack != null) {
+                    ossCallBack.onFailure(name);
+                }
                 if (clientException != null) {
                     // 本地异常，如网络异常等。
                     clientException.printStackTrace();
@@ -231,27 +227,6 @@ public class AliOssTool {
                 }
             }
         });
-    }
-
-    public void setOssCallBack(OssCallBack ossCallBack) {
-        this.mOssCallBack = ossCallBack;
-    }
-
-    class MyHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            String s = (String) msg.obj;
-            switch (msg.what) {
-                case STATE_SUCCESS:
-                    // 操作成功
-                    mOssCallBack.onSuccess(s);
-                    break;
-                case STATE_FAIL:
-                    // 操作失败
-                    mOssCallBack.onFailure(s);
-                    break;
-            }
-        }
     }
 
     public interface OssCallBack {
