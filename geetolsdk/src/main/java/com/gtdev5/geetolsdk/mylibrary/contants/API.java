@@ -111,4 +111,9 @@ public interface API {
      * 获取头像
      */
     public static String GET_HEADING = "pub_get_heading";
+
+    /**
+     * 获取阿里云oss参数
+     */
+    public static String GET_ALIOSS = "get_ali_oss";
 }

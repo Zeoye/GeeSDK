@@ -20,4 +20,5 @@ public class Contants {
     public static final String USER_ID = "user_id"; // 登录后返回的user_id
     public static final String USER_KEY = "user_key"; // 登录后返回的ukey
     public static final String USER_HEAD = "user_head"; // 登陆后返回的用户头像
+    public static final String ALI_OSS_PARAM = "ali_oss_param"; // 阿里云oss参数
 }

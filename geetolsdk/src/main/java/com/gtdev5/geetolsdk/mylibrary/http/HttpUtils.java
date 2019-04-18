@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.gtdev5.geetolsdk.mylibrary.beans.DataResultBean;
 import com.gtdev5.geetolsdk.mylibrary.beans.LoginInfoBean;
 import com.gtdev5.geetolsdk.mylibrary.beans.ResultBean;
 import com.gtdev5.geetolsdk.mylibrary.callback.BaseCallback;
@@ -22,6 +23,9 @@ import com.gtdev5.geetolsdk.mylibrary.util.MapUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.SpUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.Utils;
 import com.tencent.bugly.Bugly;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -686,6 +690,14 @@ public class HttpUtils {
     }
 
     /**
+     * 提供外部调用的获取阿里云返回参数接口
+     * @param callback 回调函数
+     */
+    public void getAliOss(BaseCallback callback) {
+        post(commonUrl + API.GET_ALIOSS, MapUtils.getCurrencyMap(), callback, API.GET_ALIOSS);
+    }
+
+    /**
      * 内部提供的post请求方法
      *
      * @param url      请求路径
@@ -721,6 +733,20 @@ public class HttpUtils {
                             Utils.setLoginInfo(info.getData().getUser_id(),
                                     info.getData().getUkey(),
                                     info.getData().getHeadimg());
+                        }
+                    } else if (requestType.equals(API.GET_ALIOSS)) {
+                        // 获取阿里云信息
+                        try {
+                            JSONObject jsonObject = new JSONObject(result);
+                            if (jsonObject.getBoolean("issucc")) {
+                                String data = jsonObject.getString("data");
+                                if (!TextUtils.isEmpty(data)) {
+                                    Log.e("哈哈", "阿里云数据：" + data);
+                                    Utils.setAliOssParam(data);
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
                     Log.e("请求数据：", result);

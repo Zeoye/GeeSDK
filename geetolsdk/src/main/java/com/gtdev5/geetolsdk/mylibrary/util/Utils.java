@@ -20,7 +20,11 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Base64;
 
+import com.google.gson.Gson;
+import com.gtdev5.geetolsdk.mylibrary.beans.AliOssBean;
 import com.gtdev5.geetolsdk.mylibrary.contants.Contants;
+import com.gtdev5.geetolsdk.mylibrary.util.des.BASE64Decoder;
+import com.gtdev5.geetolsdk.mylibrary.util.des.DesUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -462,5 +466,45 @@ public class Utils {
             e.printStackTrace();
         }
         return bitmap;
+    }
+
+    /**
+     * 储存阿里云oss参数
+     * @param string
+     */
+    public static void setAliOssParam(String string) {
+        SpUtils.getInstance().putString(Contants.ALI_OSS_PARAM, string);
+    }
+
+    /**
+     * 获取解密后的参数
+     */
+    private static String getDecParam() {
+        if (!TextUtils.isEmpty(SpUtils.getInstance().getString(Contants.ALI_OSS_PARAM))) {
+            String param = SpUtils.getInstance().getString(Contants.ALI_OSS_PARAM);
+            BASE64Decoder decoder = new BASE64Decoder();
+            try {
+                byte[] bytes = decoder.decodeBuffer(param);
+                byte[] bytes1 = DesUtil.decode(bytes);
+                if (bytes1 != null) {
+                    return new String(bytes1);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 获取AliOss参数
+     */
+    public static AliOssBean getAliOssParam() {
+        AliOssBean aliOssBean = null;
+        if (!TextUtils.isEmpty(getDecParam())) {
+            Gson gson = new Gson();
+            aliOssBean = gson.fromJson(getDecParam(), AliOssBean.class);
+        }
+        return aliOssBean;
     }
 }
