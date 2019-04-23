@@ -4,7 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
-import android.os.Message;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -37,64 +37,10 @@ import java.io.OutputStream;
  */
 
 public class AliOssAdvanceTool {
-    private static final int DOWN_SUCCESS = 101; // 下载成功
-    private static final int DOWN_FAIL = 102; // 下载失败
-    private static final int UPLOAD_SUCCESS = 103; // 上传成功
-    private static final int UPLOAD_FAIL = 104; // 上传失败
-    private static final int DELETE_SUCCESS = 105; // 删除成功
-    private static final int DELETE_FAIL = 106; // 删除失败
-    private static final int PROGRESS = 107; // 进度条
     private static AliOssAdvanceTool aliOssTool;
     private static AliOssBean aliOssBean;
     OSS mOss;
     private Context mContext;
-    private ProgressCallBack mProgressCallBack;
-    private OssCallBack mOssCallBack;
-    private String mName, mPath;
-
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case DOWN_SUCCESS:
-                    if (mOssCallBack != null) {
-                        mOssCallBack.onSuccess(mName);
-                    }
-                    break;
-                case DOWN_FAIL:
-                    if (mOssCallBack != null) {
-                        mOssCallBack.onFailure(mName);
-                    }
-                    break;
-                case UPLOAD_SUCCESS:
-                    if (mOssCallBack != null) {
-                        mOssCallBack.onSuccess(mPath);
-                    }
-                    break;
-                case UPLOAD_FAIL:
-                    if (mOssCallBack != null) {
-                        mOssCallBack.onFailure(mPath);
-                    }
-                    break;
-                case DELETE_SUCCESS:
-                    if (mOssCallBack != null) {
-                        mOssCallBack.onSuccess(mName);
-                    }
-                    break;
-                case DELETE_FAIL:
-                    if (mOssCallBack != null) {
-                        mOssCallBack.onFailure(mName);
-                    }
-                    break;
-                case PROGRESS:
-                    if (mProgressCallBack != null) {
-                        double progress = (double) msg.obj;
-                        mProgressCallBack.onProgressCallBack(progress);
-                    }
-                    break;
-            }
-        }
-    };
 
     public AliOssAdvanceTool(Context context) {
         this.mContext = context;
@@ -208,38 +154,26 @@ public class AliOssAdvanceTool {
             request.setxOssProcess(size);
         }
         if (progressCallBack != null) {
-            mProgressCallBack = progressCallBack;
             // 异步下载，可以设置进度回调
             request.setProgressListener((request1, currentSize, totalSize) -> {
                 double progress = currentSize * 1.0 / totalSize * 100.f;
-                Message msg = Message.obtain();
-                msg.what = PROGRESS;
-                msg.obj = progress;
-                mHandler.sendMessage(msg);
+                new Handler(Looper.getMainLooper()).post(() ->  progressCallBack.onProgressCallBack(progress));
             });
         }
         if (callback != null) {
-            mOssCallBack = callback;
-            mName = name;
-            mPath = path;
             OSSAsyncTask task = mOss.asyncGetObject(request, new OSSCompletedCallback<GetObjectRequest, GetObjectResult>() {
                 @Override
                 public void onSuccess(GetObjectRequest request, GetObjectResult result) {
                     InputStream inputStream = result.getObjectContent();
                     Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                    if (saveBitmap2File(bitmap, mName, mPath)) {
-                        Message msg = Message.obtain();
-                        msg.what = DOWN_SUCCESS;
-                        msg.obj = result;
-                        mHandler.sendMessage(msg);
+                    if (saveBitmap2File(bitmap, name, path)) {
+                        new Handler(Looper.getMainLooper()).post(() -> callback.onSuccess(name));
                     }
                 }
 
                 @Override
                 public void onFailure(GetObjectRequest request, ClientException clientException, ServiceException serviceException) {
-                    Message msg = Message.obtain();
-                    msg.what = DOWN_FAIL;
-                    mHandler.sendMessage(msg);
+                    new Handler(Looper.getMainLooper()).post(() -> callback.onFailure(name));
                     onError(clientException, serviceException);
                 }
             });
@@ -267,33 +201,22 @@ public class AliOssAdvanceTool {
     public void uploadFile(String bucketName, String name, String path, ProgressCallBack progressCallBack, OssCallBack callBack) {
         PutObjectRequest request = new PutObjectRequest(bucketName, name, path);
         if (progressCallBack != null) {
-            mProgressCallBack = progressCallBack;
             // 异步下载，可以设置进度回调
             request.setProgressCallback((request1, currentSize, totalSize) -> {
                 double progress = currentSize * 1.0 / totalSize * 100.f;
-                Message msg = Message.obtain();
-                msg.what = PROGRESS;
-                msg.obj = progress;
-                mHandler.sendMessage(msg);
+                new Handler(Looper.getMainLooper()).post(() ->  progressCallBack.onProgressCallBack(progress));
             });
         }
         if (callBack != null) {
-            mOssCallBack = callBack;
-            mName = name;
-            mPath = path;
             OSSAsyncTask task = mOss.asyncPutObject(request, new OSSCompletedCallback<PutObjectRequest, PutObjectResult>() {
                 @Override
                 public void onSuccess(PutObjectRequest request, PutObjectResult result) {
-                    Message msg = Message.obtain();
-                    msg.what = UPLOAD_SUCCESS;
-                    mHandler.sendMessage(msg);
+                    new Handler(Looper.getMainLooper()).post(() -> callBack.onSuccess(path));
                 }
 
                 @Override
                 public void onFailure(PutObjectRequest request, ClientException clientException, ServiceException serviceException) {
-                    Message msg = Message.obtain();
-                    msg.what = UPLOAD_FAIL;
-                    mHandler.sendMessage(msg);
+                    new Handler(Looper.getMainLooper()).post(() -> callBack.onFailure(path));
                     onError(clientException, serviceException);
                 }
             });
@@ -318,21 +241,15 @@ public class AliOssAdvanceTool {
     public void deleteFile(String bucketName, String name, OssCallBack callback) {
         DeleteObjectRequest request = new DeleteObjectRequest(bucketName, name);
         if (callback != null) {
-            mOssCallBack = callback;
-            mName = name;
             OSSAsyncTask task = mOss.asyncDeleteObject(request, new OSSCompletedCallback<DeleteObjectRequest, DeleteObjectResult>() {
                 @Override
                 public void onSuccess(DeleteObjectRequest request, DeleteObjectResult result) {
-                    Message msg = Message.obtain();
-                    msg.what = DELETE_SUCCESS;
-                    mHandler.sendMessage(msg);
+                    new Handler(Looper.getMainLooper()).post(() -> callback.onSuccess(name));
                 }
 
                 @Override
                 public void onFailure(DeleteObjectRequest request, ClientException clientException, ServiceException serviceException) {
-                    Message msg = Message.obtain();
-                    msg.what = DELETE_FAIL;
-                    mHandler.sendMessage(msg);
+                    new Handler(Looper.getMainLooper()).post(() -> callback.onFailure(name));
                     onError(clientException, serviceException);
                 }
             });
