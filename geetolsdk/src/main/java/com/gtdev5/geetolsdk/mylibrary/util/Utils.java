@@ -28,6 +28,7 @@ import com.gtdev5.geetolsdk.mylibrary.util.des.DesUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
@@ -57,28 +58,28 @@ public class Utils {
     public static String getDevice(Context context) {
         String device = "";
         Boolean getdevice = SpUtils.getInstance().getBoolean("getdevice", true);
-
         try {
             digest = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-
         TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
             if (getdevice) {
-
-                device = tm.getDeviceId();
-
+                try {
+                    // 适配双卡情况
+                    Method method = tm.getClass().getMethod("getImei", int.class);
+                    device = (String) method.invoke(tm, 0);
+                } catch (Exception e) {
+                    device = tm.getDeviceId();
+                    e.printStackTrace();
+                }
             } else {
                 if (!SpUtils.getInstance().getString("getDevicekey").equals("") && SpUtils.getInstance().getString("getDevicekey") != null) {
-
                     device = SpUtils.getInstance().getString("getDevicekey");
-
                 }
             }
         } else {
-
             if (getdevice) {
                 String yyyyMMdd = getDate("yyyyMMdd");
                 String stringRandom = getStringRandom(128);
@@ -94,7 +95,6 @@ public class Utils {
                     device = SpUtils.getInstance().getString("getDevicekey");
                 }
             }
-
         }
         return device;
     }
