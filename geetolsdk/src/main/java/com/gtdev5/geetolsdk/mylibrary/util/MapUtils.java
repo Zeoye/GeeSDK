@@ -39,6 +39,20 @@ public class MapUtils {
         Map<String, String> map = new HashMap<>();
         map.put("appid", CPResourceUtils.getString("appid"));
         map.put("sign", null);
+        map.put("device", MacUtils.getMac(mContext));
+        return map;
+    }
+
+    /**
+     * 获取device
+     * (无参的方法通用调取)
+     *
+     * @return
+     */
+    public static Map<String, String> getDeviceMap() {
+        Map<String, String> map = new HashMap<>();
+        map.put("appid", CPResourceUtils.getString("appid"));
+        map.put("sign", null);
         map.put("device", CPResourceUtils.getDevice());
         return map;
     }
@@ -295,6 +309,19 @@ public class MapUtils {
         Map<String, String> map = new HashMap<>();
         map.putAll(getCurrencyMap());
         map.put("name", name);
+        return map;
+    }
+
+    /**
+     * 通用Map
+     * (无参的方法通用调取)
+     *
+     * @return
+     */
+    public static Map<String, String> getReplaceImei() {
+        Map<String, String> map = new HashMap<>();
+        map.putAll(getDeviceMap());
+        map.put("new_imei", MacUtils.getMac(mContext));
         return map;
     }
 }
