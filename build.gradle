@@ -18,9 +18,6 @@ buildscript {
 
 allprojects {
     repositories {
-        flatDir {
-            dirs project(':geetolsdk').file('libs')
-        }
         google()
         jcenter()
         maven { url "https://jitpack.io" }

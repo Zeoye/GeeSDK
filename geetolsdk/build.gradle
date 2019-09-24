@@ -49,5 +49,4 @@ dependencies {
     implementation 'com.tencent.bugly:crashreport:latest.release'
     // 阿里云oss
     compile 'com.aliyun.dpa:oss-android-sdk:+'
-    api (name:'alipaySdk-15.6.5-20190718211159-noUtdid', ext: 'aar')
 }
