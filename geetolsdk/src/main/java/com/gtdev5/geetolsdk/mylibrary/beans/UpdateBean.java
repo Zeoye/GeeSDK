@@ -1,6 +1,5 @@
 package com.gtdev5.geetolsdk.mylibrary.beans;
 
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -21,6 +20,7 @@ public class UpdateBean implements Serializable {
     private List<Swt> swt;           //开关   需要后台设置
     private Contract contract;        //客服联系信息
     private String hpurl;              //帮助链接
+    private Config config;             //微信appid
 
     public UpdateBean(){
     }
@@ -95,5 +95,13 @@ public class UpdateBean implements Serializable {
 
     public void setVip(Vip vip) {
         this.vip = vip;
+    }
+
+    public Config getConfig() {
+        return config;
+    }
+
+    public void setConfig(Config config) {
+        this.config = config;
     }
 }
