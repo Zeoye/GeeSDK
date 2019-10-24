@@ -31,9 +31,12 @@ public class MacUtils {
     public static String getMac(Context context) {
         String mac = "02:00:00:00:00:00";
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            mac = (String) getMacAddress(context);
+            mac = getMacAddress(context);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             mac = getMacFromHardware();
+        }
+        if (mac.equals("02:00:00:00:00:00") || mac.equals("")) {
+            mac = CPResourceUtils.getDevice();
         }
         return mac;
     }
