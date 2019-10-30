@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -39,6 +40,7 @@ public abstract class BaseLaunchActivity extends AppCompatActivity {
 
     private boolean isFirstReg; //是否第一次注册
     private int RESULT_ACTION_USAGE_ACCESS_SETTINGS = 1;
+    public static final int RESULT_ACTION_SETTING = 1;
 
     /**
      * 获取读写权限
@@ -47,12 +49,15 @@ public abstract class BaseLaunchActivity extends AppCompatActivity {
         return new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission
                 .WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
     }
+
     /**
      * 获取读写权限
      */
     public String[] getPermissions() {
         return new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
     }
+
+    private String[] Permissions;
 
     /**
      * 资源id
@@ -78,58 +83,26 @@ public abstract class BaseLaunchActivity extends AppCompatActivity {
      */
     private void initData() {
         isFirstReg = SpUtils.getInstance().getBoolean(IS_FIRST_REGISTER, true);//是否是第一次注册
-        if (!TextUtils.isEmpty(DeviceUtils.getSpDeviceId())) {
-            // 若app数据里存储过deviceId
-            if (!TextUtils.isEmpty(DeviceUtils.readDeviceID(this)) &&
-                    !DeviceUtils.readDeviceID(this).equals(DeviceUtils.getSpDeviceId())) {
-                // 若sd卡里存储过deviceId并且与app数据里的不同，则替换sd卡中的deviceId
-                DeviceUtils.saveDeviceID(DeviceUtils.getSpDeviceId(), mContext);
-            }
-        } else {
-            // app没有存储过deviceId(第一次启动)
-            if (!TextUtils.isEmpty(DeviceUtils.readDeviceID(this))) {
-                // 若sd卡里存储过deviceId，则app数据也保存一份
-                DeviceUtils.putSpDeviceId(DeviceUtils.readDeviceID(this));
-            }
-        }
-        if (android.os.Build.VERSION.SDK_INT <= 28) {
-            // 获取imei作为deviceId
-            PermissionUtils.checkAndRequestMorePermissions(mActivity, getPermissions28(),
-                    RESULT_ACTION_USAGE_ACCESS_SETTINGS, () -> {
-                        // 获取到了状态码权限
-                        registerIdBeforeQ();
-                    });
-        } else {
-            // 获取uuid作为deviceId
-            PermissionUtils.checkAndRequestMorePermissions(mActivity, getPermissions(),
-                    RESULT_ACTION_USAGE_ACCESS_SETTINGS, () -> {
-                registerIdAfterQ();
-            });
-        }
+        Permissions = Build.VERSION.SDK_INT <= 28 ? getPermissions28() : getPermissions();
+        PermissionUtils.checkAndRequestMorePermissions(mActivity, Permissions,
+                RESULT_ACTION_USAGE_ACCESS_SETTINGS, this::bindDevice);
     }
 
-    /**
-     * AndroidQ之前注册逻辑
+    /***
+     * 绑定device数据
      */
-    private void registerIdBeforeQ() {
-        // 获取到了状态码权限
-        String deviceId = DeviceUtils.getIMEI(mActivity);
-        if (TextUtils.isEmpty(deviceId)) {
-            // 若此时还是获取不到imei，则用随机生成的uuid
-            deviceId = DeviceUtils.getUUID();
-        }
-        DeviceUtils.putSpDeviceId(deviceId);
-        DeviceUtils.saveDeviceID(deviceId, mContext);
-        registerId();
-    }
-
-    /**
-     * AndroidQ之后的注册逻辑
-     */
-    private void registerIdAfterQ() {
-        if (TextUtils.isEmpty(DeviceUtils.getSpDeviceId()) && TextUtils.isEmpty(DeviceUtils.readDeviceID(this))) {
-            DeviceUtils.putSpDeviceId(DeviceUtils.getUUID());
-            DeviceUtils.saveDeviceID(DeviceUtils.getUUID(), mContext);
+    private void bindDevice() {
+        if (TextUtils.isEmpty(DeviceUtils.getSpDeviceId()) && TextUtils.isEmpty(DeviceUtils.readDeviceID(mContext))) {
+            // app和sd卡都没有，都存一份
+            String imei = DeviceUtils.getIMEI(this);
+            DeviceUtils.saveDeviceID(imei, mContext);
+            DeviceUtils.putSpDeviceId(imei);
+        } else if (TextUtils.isEmpty(DeviceUtils.getSpDeviceId()) && !TextUtils.isEmpty(DeviceUtils.readDeviceID(mContext))) {
+            // sd卡有，app没有，则存一份到app
+            DeviceUtils.putSpDeviceId(DeviceUtils.readDeviceID(mContext));
+        } else {
+            // app有，sd卡没有，则存一份到sd卡
+            DeviceUtils.saveDeviceID(DeviceUtils.getSpDeviceId(), mContext);
         }
         registerId();
     }
@@ -142,7 +115,8 @@ public abstract class BaseLaunchActivity extends AppCompatActivity {
             if (Utils.isNetworkAvailable(this)) {
                 HttpUtils.getInstance().postRegister(new BaseCallback<ResultBean>() {
                     @Override
-                    public void onRequestBefore() {}
+                    public void onRequestBefore() {
+                    }
 
                     @Override
                     public void onFailure(Request request, Exception e) {
@@ -179,10 +153,12 @@ public abstract class BaseLaunchActivity extends AppCompatActivity {
         if (Utils.isNetworkAvailable(this)) {
             HttpUtils.getInstance().postUpdate(new BaseCallback<UpdateBean>() {
                 @Override
-                public void onRequestBefore() {}
+                public void onRequestBefore() {
+                }
 
                 @Override
-                public void onFailure(Request request, Exception e) {}
+                public void onFailure(Request request, Exception e) {
+                }
 
                 @Override
                 public void onSuccess(Response response, UpdateBean o) {
@@ -193,7 +169,8 @@ public abstract class BaseLaunchActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onError(Response response, int errorCode, Exception e) {}
+                public void onError(Response response, int errorCode, Exception e) {
+                }
             });
         } else {
             // 没有网络，但注册过，直接跳转到下个页面，并且做无网络提示
@@ -206,85 +183,62 @@ public abstract class BaseLaunchActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == RESULT_ACTION_USAGE_ACCESS_SETTINGS) {
-            String[] curPermissions;
-            if (android.os.Build.VERSION.SDK_INT <= 28) {
-                curPermissions = getPermissions28();
-            } else {
-                curPermissions = getPermissions();
-            }
-            PermissionUtils.onRequestMorePermissionsResult(mContext, curPermissions,
+            PermissionUtils.onRequestMorePermissionsResult(mContext, permissions,
                     new PermissionUtils.PermissionCheckCallBack() {
-                @Override
-                public void onHasPermission() {
-                    if (android.os.Build.VERSION.SDK_INT <= 28) {
-                        registerIdBeforeQ();
-                    } else {
-                        registerIdAfterQ();
-                    }
-                }
+                        @Override
+                        public void onHasPermission() {
+                            bindDevice();
+                        }
 
-                @Override
-                public void onUserHasAlreadyTurnedDown(String... permission) {
-                    ShowTipDialog("温馨提示",
-                            "授予权限能使数据绑定手机哦，点击确定继续授权",
-                            "确定", new OnDialogClickListener() {
-                                @Override
-                                public void OnDialogOK() {
-                                    PermissionUtils.requestMorePermissions(mActivity,
-                                            permissions, RESULT_ACTION_USAGE_ACCESS_SETTINGS);
-                                }
+                        @Override
+                        public void onUserHasAlreadyTurnedDown(String... permission) {
+                            ShowTipDialog("温馨提示",
+                                    "授予权限能使数据绑定手机哦，点击确定继续授权",
+                                    "确定", new OnDialogClickListener() {
+                                        @Override
+                                        public void OnDialogOK() {
+                                            PermissionUtils.requestMorePermissions(mActivity,
+                                                    permissions, RESULT_ACTION_USAGE_ACCESS_SETTINGS);
+                                        }
 
-                                @Override
-                                public void OnDialogExit() {
-                                    // 退出APP
-                                    finish();
-                                }
-                            });
-                }
+                                        @Override
+                                        public void OnDialogExit() {
+                                            // 退出APP
+                                            finish();
+                                        }
+                                    });
+                        }
 
-                @Override
-                public void onUserHasAlreadyTurnedDownAndDontAsk(String... permission) {
-                    ShowTipDialog("温馨提示",
-                            "授予权限才能使用软件喔，请到设置中允许权限",
-                            "确定", new OnDialogClickListener() {
-                                @Override
-                                public void OnDialogOK() {
-                                    Intent intent = new Intent();
-                                    intent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
-                                    intent.setData(Uri.fromParts("package", getPackageName(),
-                                            null));
-                                    startActivityForResult(intent, 1);
-                                }
+                        @Override
+                        public void onUserHasAlreadyTurnedDownAndDontAsk(String... permission) {
+                            ShowTipDialog("温馨提示",
+                                    "授予权限才能使用软件喔，请到设置中允许权限",
+                                    "确定", new OnDialogClickListener() {
+                                        @Override
+                                        public void OnDialogOK() {
+                                            Intent mIntent = new Intent();
+                                            mIntent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
+                                            mIntent.setData(Uri.fromParts("package", getPackageName(), null));
+                                            startActivityForResult(mIntent, RESULT_ACTION_SETTING);
+                                        }
 
-                                @Override
-                                public void OnDialogExit() {
-                                    // 退出APP
-                                    finish();
-                                }
-                            });
-                }
-            });
+                                        @Override
+                                        public void OnDialogExit() {
+                                            // 退出APP
+                                            finish();
+                                        }
+                                    });
+                        }
+                    });
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1) {
-            String[] curPermissions;
-            if (android.os.Build.VERSION.SDK_INT <= 28) {
-                curPermissions = getPermissions28();
-            } else {
-                curPermissions = getPermissions();
-            }
-            PermissionUtils.checkAndRequestMorePermissions(mActivity, curPermissions,
-                    RESULT_ACTION_USAGE_ACCESS_SETTINGS, () -> {
-                if (android.os.Build.VERSION.SDK_INT <= 28) {
-                    registerIdBeforeQ();
-                } else {
-                    registerIdAfterQ();
-                }
-            });
+        if (requestCode == RESULT_ACTION_SETTING) {
+            PermissionUtils.checkAndRequestMorePermissions(mActivity, Permissions,
+                    RESULT_ACTION_USAGE_ACCESS_SETTINGS, this::bindDevice);
         }
     }
 
