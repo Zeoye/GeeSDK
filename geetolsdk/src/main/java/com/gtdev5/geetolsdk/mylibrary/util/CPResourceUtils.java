@@ -103,7 +103,7 @@ public class CPResourceUtils {
      * @return
      */
     public static String getDevice(){
-        return Utils.getDevice(mContext);
+        return DeviceUtils.getSpDeviceId();
     }
 
     /**

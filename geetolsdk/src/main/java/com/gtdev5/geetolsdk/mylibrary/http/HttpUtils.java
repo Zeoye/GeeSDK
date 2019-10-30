@@ -12,12 +12,15 @@ import com.google.gson.JsonSyntaxException;
 import com.gtdev5.geetolsdk.mylibrary.beans.DataResultBean;
 import com.gtdev5.geetolsdk.mylibrary.beans.LoginInfoBean;
 import com.gtdev5.geetolsdk.mylibrary.beans.ResultBean;
+import com.gtdev5.geetolsdk.mylibrary.beans.UpdateBean;
 import com.gtdev5.geetolsdk.mylibrary.callback.BaseCallback;
 import com.gtdev5.geetolsdk.mylibrary.callback.DataCallBack;
 import com.gtdev5.geetolsdk.mylibrary.contants.API;
 import com.gtdev5.geetolsdk.mylibrary.contants.Contants;
 import com.gtdev5.geetolsdk.mylibrary.initialization.GeetolSDK;
 import com.gtdev5.geetolsdk.mylibrary.util.CPResourceUtils;
+import com.gtdev5.geetolsdk.mylibrary.util.DataSaveUtils;
+import com.gtdev5.geetolsdk.mylibrary.util.DeviceUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.GsonUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.MapUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.SpUtils;
@@ -122,7 +125,7 @@ public class HttpUtils {
         map.put("appid", CPResourceUtils.getString("appid"));
 //        map.put("key",CPResourceUtils.getString("appkey"));
         map.put("sign", null);
-        map.put("device", CPResourceUtils.getDevice());
+        map.put("device", DeviceUtils.getSpDeviceId());
         if (paramKey != null) {
             for (int i = 0; i < paramKey.length; i++) {
                 map.put(paramKey[i], String.valueOf(paramValue[i]));
@@ -573,7 +576,7 @@ public class HttpUtils {
      * @param callback 回调函数
      */
     public void postUpdate(BaseCallback callback) {
-        post(commonUrl + API.UPDATE, MapUtils.getCurrencyMap(), callback);
+        post(commonUrl + API.UPDATE, MapUtils.getCurrencyMap(), callback, API.UPDATE);
     }
 
     /**
@@ -761,6 +764,12 @@ public class HttpUtils {
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
+                        }
+                    } else if (requestType.equals(API.UPDATE)) {
+                        // 获取所有数据
+                        UpdateBean updateBean = GsonUtils.getFromClass(result, UpdateBean.class);
+                        if (updateBean != null) {
+                            DataSaveUtils.getInstance().saveAppData(updateBean);
                         }
                     }
                     Log.e("请求数据：", result);

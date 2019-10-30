@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/dialog_show_tip"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/dialog_tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="21dp"
+        android:gravity="center_horizontal"
+        android:text="温馨提示"
+        android:textColor="#2e2e2e"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/dialog_tv_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|start"
+        android:layout_marginLeft="31dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="35dp"
+        android:layout_marginBottom="22dp"
+        android:layout_weight="1"
+        android:gravity="center_vertical|start"
+        android:lineSpacingExtra="10dp"
+        tools:text="群聊人数至少需要三人才能使用，请先设置群聊信息"
+        android:textColor="#2e2e2e"
+        android:textSize="15sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5px"
+        android:background="#666666" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/dialog_bt_dis"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:background="@drawable/dialog_bt_left_bg"
+            android:text="取消"
+            android:textColor="#6d6d6d"
+            android:textSize="18sp" />
+
+        <View
+            android:layout_width="0.5px"
+            android:layout_height="match_parent"
+            android:background="#666666" />
+
+        <Button
+            android:id="@+id/dialog_bt_ok"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:background="@drawable/dialog_bt_right_bg"
+            android:text="确定"
+            android:textColor="@color/main_Color"
+            android:textSize="18sp" />
+    </LinearLayout>
+</LinearLayout>

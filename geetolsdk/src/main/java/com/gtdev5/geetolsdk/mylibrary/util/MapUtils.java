@@ -39,7 +39,7 @@ public class MapUtils {
         Map<String, String> map = new HashMap<>();
         map.put("appid", CPResourceUtils.getString("appid"));
         map.put("sign", null);
-        map.put("device", MacUtils.getMac(mContext));
+        map.put("device", DeviceUtils.getSpDeviceId());
         return map;
     }
 
@@ -53,7 +53,7 @@ public class MapUtils {
         Map<String, String> map = new HashMap<>();
         map.put("appid", CPResourceUtils.getString("appid"));
         map.put("sign", null);
-        map.put("device", CPResourceUtils.getDevice());
+        map.put("device", DeviceUtils.getSpDeviceId());
         return map;
     }
 
