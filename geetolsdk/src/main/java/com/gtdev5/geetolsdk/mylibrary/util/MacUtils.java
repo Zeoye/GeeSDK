@@ -44,12 +44,12 @@ public class MacUtils {
     /**
      * 获取mac地址
      */
-    public static String getMac() {
+    public static String getMacAddr(Context context) {
         String mac = "";
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            mac = getMacAddress(mContext);
+            mac = getMacAddress(context);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            mac = getMacFromHardware(mContext);
+            mac = getMacFromHardware(context);
         }
         if (mac != null) {
             if (mac.equals("02:00:00:00:00:00")) {
