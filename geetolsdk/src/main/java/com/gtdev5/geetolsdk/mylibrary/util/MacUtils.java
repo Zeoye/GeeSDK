@@ -33,7 +33,7 @@ public class MacUtils {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             mac = getMacAddress(context);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            mac = getMacFromHardware();
+            mac = getMacFromHardware(context);
         }
         if (mac.equals("02:00:00:00:00:00") || mac.equals("")) {
             mac = CPResourceUtils.getDevice();
@@ -41,12 +41,20 @@ public class MacUtils {
         return mac;
     }
 
+    /**
+     * 获取mac地址
+     */
     public static String getMac() {
-        String mac = "02:00:00:00:00:00";
+        String mac = "";
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            mac = (String) getMacAddress(mContext);
+            mac = getMacAddress(mContext);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            mac = getMacFromHardware();
+            mac = getMacFromHardware(mContext);
+        }
+        if (mac != null) {
+            if (mac.equals("02:00:00:00:00:00")) {
+                mac = "";
+            }
         }
         return mac;
     }
@@ -67,7 +75,13 @@ public class MacUtils {
         return macAddress;
     }
 
-    private static String getMacFromHardware() {
+    private static String getMacFromHardware(Context context) {
+        WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if (!wifiManager.isWifiEnabled()) {
+            //必须先打开，才能获取到MAC地址
+            wifiManager.setWifiEnabled(true);
+            wifiManager.setWifiEnabled(false);
+        }
         try {
             List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
             for (NetworkInterface nif : all) {
@@ -90,6 +104,6 @@ public class MacUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "02:00:00:00:00:00";
+        return null;
     }
 }

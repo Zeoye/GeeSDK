@@ -18,7 +18,6 @@ import com.gtdev5.geetolsdk.mylibrary.callback.BaseCallback;
 import com.gtdev5.geetolsdk.mylibrary.http.HttpUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.DeviceUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.PermissionUtils;
-import com.gtdev5.geetolsdk.mylibrary.util.SpUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.ToastUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.Utils;
 import com.gtdev5.geetolsdk.mylibrary.widget.CenterDialog;
@@ -34,11 +33,9 @@ import okhttp3.Response;
  */
 
 public abstract class BaseLaunchActivity extends AppCompatActivity {
-    public static final String IS_FIRST_REGISTER = "is_first_register"; // 是否首次注册
     protected Context mContext;
     protected BaseLaunchActivity mActivity;
 
-    private boolean isFirstReg; //是否第一次注册
     private int RESULT_ACTION_USAGE_ACCESS_SETTINGS = 1;
     public static final int RESULT_ACTION_SETTING = 1;
 
@@ -82,7 +79,6 @@ public abstract class BaseLaunchActivity extends AppCompatActivity {
      * 初始化数据
      */
     private void initData() {
-        isFirstReg = SpUtils.getInstance().getBoolean(IS_FIRST_REGISTER, true);//是否是第一次注册
         Permissions = Build.VERSION.SDK_INT <= 28 ? getPermissions28() : getPermissions();
         PermissionUtils.checkAndRequestMorePermissions(mActivity, Permissions,
                 RESULT_ACTION_USAGE_ACCESS_SETTINGS, this::bindDevice);
@@ -111,38 +107,40 @@ public abstract class BaseLaunchActivity extends AppCompatActivity {
      * 注册设备id
      */
     private void registerId() {
-        if (isFirstReg) {
-            if (Utils.isNetworkAvailable(this)) {
-                HttpUtils.getInstance().postRegister(new BaseCallback<ResultBean>() {
-                    @Override
-                    public void onRequestBefore() {
-                    }
+        if (Utils.isNetworkAvailable(this)) {
+            HttpUtils.getInstance().postRegister(new BaseCallback<ResultBean>() {
+                @Override
+                public void onRequestBefore() {
+                }
 
-                    @Override
-                    public void onFailure(Request request, Exception e) {
-                        SpUtils.getInstance().putBoolean(IS_FIRST_REGISTER, true);
-                    }
+                @Override
+                public void onFailure(Request request, Exception e) {
+                    ToastUtils.showShortToast("网络异常！请开启网络后重新打开APP");
+                }
 
-                    @Override
-                    public void onSuccess(Response response, ResultBean o) {
-                        if (o != null && o.isIssucc()) {
-                            SpUtils.getInstance().putBoolean(IS_FIRST_REGISTER, false);
+                @Override
+                public void onSuccess(Response response, ResultBean o) {
+                    if (o != null) {
+                        if (o.isIssucc()) {
                             // 注册成功，调取App数据接口
                             getUpdateInfo();
+                        } else {
+                            // 注册失败，弹出提示
+                            if (!TextUtils.isEmpty(o.getMsg())) {
+                                ToastUtils.showShortToast(o.getMsg());
+                            }
                         }
                     }
+                }
 
-                    @Override
-                    public void onError(Response response, int errorCode, Exception e) {
-                        SpUtils.getInstance().putBoolean(IS_FIRST_REGISTER, true);
-                    }
-                });
-            } else {
-                // 首次进入，并且没有网络请求
-                ToastUtils.showShortToast("网络异常！请开启网络后重新打开APP");
-            }
+                @Override
+                public void onError(Response response, int errorCode, Exception e) {
+                    ToastUtils.showShortToast("网络异常！请开启网络后重新打开APP");
+                }
+            });
         } else {
-            getUpdateInfo();
+            // 没有网络请求
+            ToastUtils.showShortToast("网络异常！请开启网络后重新打开APP");
         }
     }
 
