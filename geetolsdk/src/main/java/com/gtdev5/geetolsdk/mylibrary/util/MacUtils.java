@@ -55,6 +55,8 @@ public class MacUtils {
             if (mac.equals("02:00:00:00:00:00")) {
                 mac = "";
             }
+        } else {
+            mac = "";
         }
         return mac;
     }
@@ -98,6 +100,6 @@ public class MacUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return "";
     }
 }
