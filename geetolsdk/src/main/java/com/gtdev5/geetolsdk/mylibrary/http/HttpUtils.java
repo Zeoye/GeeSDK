@@ -9,7 +9,6 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.gtdev5.geetolsdk.mylibrary.beans.DataResultBean;
 import com.gtdev5.geetolsdk.mylibrary.beans.LoginInfoBean;
 import com.gtdev5.geetolsdk.mylibrary.beans.ResultBean;
 import com.gtdev5.geetolsdk.mylibrary.beans.UpdateBean;
@@ -24,7 +23,6 @@ import com.gtdev5.geetolsdk.mylibrary.util.DeviceUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.GsonUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.MapUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.SpUtils;
-import com.gtdev5.geetolsdk.mylibrary.util.ToastUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.Utils;
 import com.tencent.bugly.Bugly;
 
@@ -800,10 +798,7 @@ public class HttpUtils {
                         ResultBean resultBean = GsonUtils.getFromClass(result, ResultBean.class);
                         if (resultBean != null && !resultBean.isIssucc()) {
                             // 已在别的设备登陆，清空本机登陆状态
-                            Utils.setLoginInfo("0", "", "");
-                            if (!TextUtils.isEmpty(resultBean.getMsg())) {
-                                ToastUtils.showShortToast(resultBean.getMsg());
-                            }
+                            Utils.setLoginInfo("", "", "");
                         }
                     }
                     Log.e("请求数据：", result);

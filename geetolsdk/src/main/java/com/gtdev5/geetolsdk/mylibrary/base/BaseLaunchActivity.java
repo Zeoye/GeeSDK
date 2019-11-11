@@ -196,7 +196,7 @@ public abstract class BaseLaunchActivity extends AppCompatActivity {
      */
     private void checkLogin() {
         if (Utils.isNetworkAvailable(this)) {
-            if (!TextUtils.isEmpty(Utils.getUserId()) && !Utils.getUserId().equals("0")) {
+            if (!TextUtils.isEmpty(Utils.getUserId())) {
                 // 登录过
                 HttpUtils.getInstance().checkLogin(new BaseCallback<ResultBean>() {
                     @Override
@@ -211,6 +211,9 @@ public abstract class BaseLaunchActivity extends AppCompatActivity {
                             if (o.isIssucc()) {
                                 Log.e("校验登录:", "已经登录过");
                             } else {
+                                if (!TextUtils.isEmpty(o.getMsg())) {
+                                    ToastUtils.showShortToast(o.getMsg());
+                                }
                                 Log.e("校验登录:", "已在别机登录，本机下线");
                             }
                         }

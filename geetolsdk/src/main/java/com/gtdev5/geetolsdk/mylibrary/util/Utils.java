@@ -385,7 +385,7 @@ public class Utils {
     public static String getUserId() {
         String userId = SpUtils.getInstance().getString(Contants.USER_ID);
         if (TextUtils.isEmpty(userId)) {
-            userId = "0";
+            userId = "";
         }
         return userId;
     }
