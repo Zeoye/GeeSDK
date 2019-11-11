@@ -383,7 +383,11 @@ public class Utils {
      * 获取用户id
      */
     public static String getUserId() {
-        return SpUtils.getInstance().getString(Contants.USER_ID);
+        String userId = SpUtils.getInstance().getString(Contants.USER_ID);
+        if (TextUtils.isEmpty(userId)) {
+            userId = "0";
+        }
+        return userId;
     }
 
     /**
@@ -391,7 +395,11 @@ public class Utils {
      * @return
      */
     public static String getUserKey() {
-        return SpUtils.getInstance().getString(Contants.USER_KEY);
+        String uKey = SpUtils.getInstance().getString(Contants.USER_KEY);
+        if (TextUtils.isEmpty(uKey)) {
+            uKey = "";
+        }
+        return uKey;
     }
 
     /**

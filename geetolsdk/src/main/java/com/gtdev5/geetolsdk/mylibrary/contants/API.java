@@ -126,4 +126,16 @@ public interface API {
      * 设备识别码替换
      */
     public static String GET_IMEI_REPLACE = "imei.replace";
+
+    /**
+     * 手机动态码登陆
+     * // 2019.11.11新增
+     */
+    public static String USER_LOGIN_CODE = "sms.userlogin";
+
+    /**
+     * 校验登录状态
+     * // 2019.11.11新增
+     */
+    public static String USER_LOGIN_CHECK = "sms.statelogin";
 }

@@ -40,6 +40,9 @@ public class MapUtils {
         map.put("appid", CPResourceUtils.getString("appid"));
         map.put("sign", null);
         map.put("device", DeviceUtils.getSpDeviceId());
+        // 2019.11.11新增(可为空)
+        map.put("user_id", Utils.getUserId());
+        map.put("user_key", Utils.getUserKey());
         return map;
     }
 
@@ -54,6 +57,9 @@ public class MapUtils {
         map.put("appid", CPResourceUtils.getString("appid"));
         map.put("sign", null);
         map.put("device", DeviceUtils.getSpDeviceId());
+        // 2019.11.11新增(可为空)
+        map.put("user_id", Utils.getUserId());
+        map.put("user_key", Utils.getUserKey());
         return map;
     }
 
@@ -214,12 +220,17 @@ public class MapUtils {
     /**
      * 获取验证码
      * @param tel 手机号
+     * @param tpl 信息模板（SMSCode已提供基本类型）
+     * @param sms_sign 短信签名
      * @return
      */
-    public static Map<String, String> getVarCode(String tel) {
+    public static Map<String, String> getVarCode(String tel, String tpl, String sms_sign) {
         Map<String, String> map = new HashMap<>();
         map.putAll(getCurrencyMap());
         map.put("tel", tel);
+        // 2019.11.11新增
+        map.put("tpl", tpl);
+        map.put("sms_sign", sms_sign);
         return map;
     }
 
@@ -323,6 +334,22 @@ public class MapUtils {
         Map<String, String> map = new HashMap<>();
         map.putAll(getDeviceMap());
         map.put("new_imei", MacUtils.getMac(mContext));
+        return map;
+    }
+
+    /**
+     * 手机号动态登陆
+     * 2019.11.11新增
+     * @param tel 手机号
+     * @param smscode 短信认证码
+     * @param smskey 短信认证码校验key
+     */
+    public static Map<String, String> getUserCodeLogin(String tel, String smscode, String smskey) {
+        Map<String, String> map = new HashMap<>();
+        map.putAll(getCurrencyMap());
+        map.put("tel", tel);
+        map.put("smscode", smscode);
+        map.put("smskey", smskey);
         return map;
     }
 }

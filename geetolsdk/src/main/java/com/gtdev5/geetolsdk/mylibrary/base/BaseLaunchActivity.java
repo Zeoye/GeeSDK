@@ -10,14 +10,17 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.gtdev5.geetolsdk.R;
 import com.gtdev5.geetolsdk.mylibrary.beans.ResultBean;
 import com.gtdev5.geetolsdk.mylibrary.beans.UpdateBean;
 import com.gtdev5.geetolsdk.mylibrary.callback.BaseCallback;
+import com.gtdev5.geetolsdk.mylibrary.contants.Contants;
 import com.gtdev5.geetolsdk.mylibrary.http.HttpUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.DeviceUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.PermissionUtils;
+import com.gtdev5.geetolsdk.mylibrary.util.SpUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.ToastUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.Utils;
 import com.gtdev5.geetolsdk.mylibrary.widget.CenterDialog;
@@ -38,6 +41,7 @@ public abstract class BaseLaunchActivity extends AppCompatActivity {
 
     private int RESULT_ACTION_USAGE_ACCESS_SETTINGS = 1;
     public static final int RESULT_ACTION_SETTING = 1;
+    private boolean isFirstRegister; // 是否首次注册
 
     /**
      * 获取读写权限
@@ -79,6 +83,7 @@ public abstract class BaseLaunchActivity extends AppCompatActivity {
      * 初始化数据
      */
     private void initData() {
+        isFirstRegister = SpUtils.getInstance().getBoolean(Contants.FIRST_REGISTER, true);
         Permissions = Build.VERSION.SDK_INT <= 28 ? getPermissions28() : getPermissions();
         PermissionUtils.checkAndRequestMorePermissions(mActivity, Permissions,
                 RESULT_ACTION_USAGE_ACCESS_SETTINGS, this::bindDevice);
@@ -107,40 +112,48 @@ public abstract class BaseLaunchActivity extends AppCompatActivity {
      * 注册设备id
      */
     private void registerId() {
-        if (Utils.isNetworkAvailable(this)) {
-            HttpUtils.getInstance().postRegister(new BaseCallback<ResultBean>() {
-                @Override
-                public void onRequestBefore() {
-                }
+        if (isFirstRegister) {
+            if (Utils.isNetworkAvailable(this)) {
+                HttpUtils.getInstance().postRegister(new BaseCallback<ResultBean>() {
+                    @Override
+                    public void onRequestBefore() {
+                    }
 
-                @Override
-                public void onFailure(Request request, Exception e) {
-                    ToastUtils.showShortToast("网络异常！请开启网络后重新打开APP");
-                }
+                    @Override
+                    public void onFailure(Request request, Exception e) {
+                        ToastUtils.showShortToast("网络异常！请开启网络后重新打开APP");
+                        SpUtils.getInstance().putBoolean(Contants.FIRST_REGISTER, true);
+                    }
 
-                @Override
-                public void onSuccess(Response response, ResultBean o) {
-                    if (o != null) {
-                        if (o.isIssucc()) {
-                            // 注册成功，调取App数据接口
-                            getUpdateInfo();
-                        } else {
-                            // 注册失败，弹出提示
-                            if (!TextUtils.isEmpty(o.getMsg())) {
-                                ToastUtils.showShortToast(o.getMsg());
+                    @Override
+                    public void onSuccess(Response response, ResultBean o) {
+                        if (o != null) {
+                            if (o.isIssucc()) {
+                                // 注册成功，调取App数据接口
+                                getUpdateInfo();
+                                SpUtils.getInstance().putBoolean(Contants.FIRST_REGISTER, false);
+                            } else {
+                                SpUtils.getInstance().putBoolean(Contants.FIRST_REGISTER, false);
+                                // 注册失败，弹出提示
+                                if (!TextUtils.isEmpty(o.getMsg())) {
+                                    ToastUtils.showShortToast(o.getMsg());
+                                }
                             }
                         }
                     }
-                }
 
-                @Override
-                public void onError(Response response, int errorCode, Exception e) {
-                    ToastUtils.showShortToast("网络异常！请开启网络后重新打开APP");
-                }
-            });
+                    @Override
+                    public void onError(Response response, int errorCode, Exception e) {
+                        SpUtils.getInstance().putBoolean(Contants.FIRST_REGISTER, true);
+                        ToastUtils.showShortToast("网络异常！请开启网络后重新打开APP");
+                    }
+                });
+            } else {
+                // 没有网络请求
+                ToastUtils.showShortToast("网络异常！请开启网络后重新打开APP");
+            }
         } else {
-            // 没有网络请求
-            ToastUtils.showShortToast("网络异常！请开启网络后重新打开APP");
+            getUpdateInfo();
         }
     }
 
@@ -174,6 +187,39 @@ public abstract class BaseLaunchActivity extends AppCompatActivity {
             // 没有网络，但注册过，直接跳转到下个页面，并且做无网络提示
             ToastUtils.showShortToast("网络异常！请检查网络是否开启");
             jumpToNext();
+        }
+        checkLogin();
+    }
+
+    /**
+     * 校验登陆
+     */
+    private void checkLogin() {
+        if (Utils.isNetworkAvailable(this)) {
+            if (!TextUtils.isEmpty(Utils.getUserId()) && !Utils.getUserId().equals("0")) {
+                // 登录过
+                HttpUtils.getInstance().checkLogin(new BaseCallback<ResultBean>() {
+                    @Override
+                    public void onRequestBefore() {}
+
+                    @Override
+                    public void onFailure(Request request, Exception e) {}
+
+                    @Override
+                    public void onSuccess(Response response, ResultBean o) {
+                        if (o != null) {
+                            if (o.isIssucc()) {
+                                Log.e("校验登录:", "已经登录过");
+                            } else {
+                                Log.e("校验登录:", "已在别机登录，本机下线");
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Response response, int errorCode, Exception e) {}
+                });
+            }
         }
     }
 

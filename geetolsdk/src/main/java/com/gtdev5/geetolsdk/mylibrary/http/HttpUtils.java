@@ -24,6 +24,7 @@ import com.gtdev5.geetolsdk.mylibrary.util.DeviceUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.GsonUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.MapUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.SpUtils;
+import com.gtdev5.geetolsdk.mylibrary.util.ToastUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.Utils;
 import com.tencent.bugly.Bugly;
 
@@ -637,10 +638,12 @@ public class HttpUtils {
     /**
      * 提供外部调用的获取验证码接口
      * @param tel 手机号
+     * @param tpl 信息模板（SMSCode已提供基本类型）
+     * @param sms_sign 短信签名
      * @param callback 回调函数
      */
-    public void getVarCode(String tel, BaseCallback callback) {
-        post(commonUrl + API.GET_VARCODE, MapUtils.getVarCode(tel), callback);
+    public void getVarCode(String tel, String tpl, String sms_sign, BaseCallback callback) {
+        post(commonUrl + API.GET_VARCODE, MapUtils.getVarCode(tel, tpl, sms_sign), callback);
     }
 
     /**
@@ -715,6 +718,27 @@ public class HttpUtils {
     }
 
     /**
+     * 动态码登录接口
+     * 2019.11.11新增
+     * @param tel 手机号
+     * @param smscode 短信验证码
+     * @param smskey 短信认证码校验key
+     * @param callback
+     */
+    public void userCodeLogin(String tel, String smscode, String smskey, BaseCallback callback) {
+        post(commonUrl + API.USER_LOGIN_CODE, MapUtils.getUserCodeLogin(tel, smscode, smskey), callback,
+                API.USER_LOGIN_CODE);
+    }
+
+    /**
+     * 登陆校验
+     * @param callback
+     */
+    public void checkLogin(BaseCallback callback) {
+        post(commonUrl + API.USER_LOGIN_CHECK, MapUtils.getCurrencyMap(), callback, API.USER_LOGIN_CHECK);
+    }
+
+    /**
      * 内部提供的post请求方法
      *
      * @param url      请求路径
@@ -743,7 +767,7 @@ public class HttpUtils {
                     //如果是注册设备，获取腾讯bugly 错误日子反馈平台
                     if (requestType.equals(API.REGIST_DEVICE)) {
                         initCrashRePort(result);
-                    } else if (requestType.equals(API.USER_LOGIN)) {
+                    } else if (requestType.equals(API.USER_LOGIN) || requestType.equals(API.USER_LOGIN_CODE)) {
                         // 保存用户信息
                         LoginInfoBean info = GsonUtils.getFromClass(result, LoginInfoBean.class);
                         if (info != null && info.isIssucc()) {
@@ -770,6 +794,16 @@ public class HttpUtils {
                         UpdateBean updateBean = GsonUtils.getFromClass(result, UpdateBean.class);
                         if (updateBean != null) {
                             DataSaveUtils.getInstance().saveAppData(updateBean);
+                        }
+                    } else if (requestType.equals(API.USER_LOGIN_CHECK)) {
+                        // 校验登陆
+                        ResultBean resultBean = GsonUtils.getFromClass(result, ResultBean.class);
+                        if (resultBean != null && !resultBean.isIssucc()) {
+                            // 已在别的设备登陆，清空本机登陆状态
+                            Utils.setLoginInfo("0", "", "");
+                            if (!TextUtils.isEmpty(resultBean.getMsg())) {
+                                ToastUtils.showShortToast(resultBean.getMsg());
+                            }
                         }
                     }
                     Log.e("请求数据：", result);
