@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/gt_bg_common"
+    android:fitsSystemWindows="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/gt_title_height"
+        android:background="@color/gt_title_bg_color">
+
+        <com.gtdev5.geetolsdk.mylibrary.widget.PressedImageView
+            android:id="@+id/iv_back"
+            android:layout_width="@dimen/gt_title_height"
+            android:layout_height="@dimen/gt_title_height"
+            android:src="@mipmap/gt_back"
+            android:tint="@color/gt_title_txt_color"
+            android:scaleType="centerInside"/>
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="反馈详情"
+            android:textSize="18sp"
+            android:textColor="@color/gt_title_txt_color"
+            android:layout_centerInParent="true"/>
+
+        <com.gtdev5.geetolsdk.mylibrary.widget.PressedTextView
+            android:id="@+id/tv_exit"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="结束服务"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:textColor="@color/gt_title_txt_color"
+            android:layout_alignParentRight="true"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/gt_title_height">
+
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="16dp"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/gt_bg_suggest_item"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="@dimen/dp_10">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="10dp">
+
+                        <TextView
+                            android:id="@+id/tv_time"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:includeFontPadding="false"
+                            android:textColor="@color/gt_text_color1"
+                            android:textSize="16sp"
+                            tools:text="18:00"/>
+
+                        <TextView
+                            android:id="@+id/tv_state"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:includeFontPadding="false"
+                            android:text="状态：待解决"
+                            android:textColor="@color/gt_text_color1"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_suggest_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="标题："
+                        android:textColor="@color/gt_text_color1"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="10dp"/>
+
+                    <TextView
+                        android:id="@+id/tv_type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="类型："
+                        android:textColor="@color/gt_text_color1"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="10dp" />
+
+                    <TextView
+                        android:id="@+id/tv_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="8dp"
+                        android:lineSpacingExtra="4dp"
+                        android:textColor="@color/gt_text_color1"
+                        android:textSize="16sp" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recyclerview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="10dp"/>
+                </LinearLayout>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recyclerview1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/gt_bg_suggest_item"
+                    android:layout_marginBottom="10dp"/>
+            </LinearLayout>
+
+        </android.support.v4.widget.NestedScrollView>
+
+        <com.gtdev5.geetolsdk.mylibrary.widget.PressedTextView
+            android:id="@+id/tv_reply"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@drawable/gt_btn"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="回复"
+            android:textSize="18sp"
+            android:textColor="@color/gt_text_btn_color"
+            android:gravity="center" />
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerInParent="true"
+        android:indeterminateTintMode="src_atop"
+        android:indeterminateTint="@color/gt_progress_color"
+        android:visibility="gone"/>
+</RelativeLayout>

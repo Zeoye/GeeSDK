@@ -2,4 +2,27 @@
 <resources>
     <color name="main_Color">#9BABEF</color>
     <color name="main_Color1">#889BABEF</color>
+
+    <!-- 反馈部分主题色/状态栏颜色 -->
+    <color name="gt_main_color">#51ACE9</color>
+    <!-- 反馈部分背景颜色 -->
+    <color name="gt_bg_common">#ffffff</color>
+    <!-- 反馈部分标题背景颜色 -->
+    <color name="gt_title_bg_color">#51ACE9</color>
+    <!-- 反馈部分标题文字颜色 -->
+    <color name="gt_title_txt_color">#ffffff</color>
+    <!-- 反馈部分加载框颜色 -->
+    <color name="gt_progress_color">#6d6d6d</color>
+    <!-- 反馈部分编辑框颜色 -->
+    <color name="gt_bg_edit_color">#8D8D8D</color>
+    <!-- 反馈部分文字主颜色 -->
+    <color name="gt_text_color1">#000000</color>
+    <!-- 反馈部分文字次颜色 -->
+    <color name="gt_text_color2">#8D8D8D</color>
+    <!-- 反馈部分按钮内文字颜色 -->
+    <color name="gt_text_btn_color">#ffffff</color>
+    <!-- 反馈部分回复内容框颜色 -->
+    <color name="gt_bg_reply_color">#e3e3e3</color>
+    <!-- 反馈部分反馈类型选择框颜色 -->
+    <color name="gt_check_color">#51ACE9</color>
 </resources>

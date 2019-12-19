@@ -9,5 +9,29 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+
+    <application
+        android:allowBackup="false"
+        android:persistent="true"
+        android:supportsRtl="true">
+        <!-- 反馈开始 -->
+        <activity android:name=".mylibrary.feedback.GTSuggestListActivity"
+            android:screenOrientation="portrait"
+            android:label="反馈列表"/>
+        <activity android:name=".mylibrary.feedback.GTSuggestAddActivity"
+            android:screenOrientation="portrait"
+            android:label="添加反馈"/>
+        <activity android:name=".mylibrary.feedback.GTSuggestDetailActivity"
+            android:screenOrientation="portrait"
+            android:label="反馈详情"/>
+        <activity android:name=".mylibrary.feedback.GTImageShowActivity"
+            android:screenOrientation="portrait"
+            android:label="图片展示"/>
+        <activity android:name=".mylibrary.feedback.GTSuggestReplyActivity"
+            android:screenOrientation="portrait"
+            android:label="反馈回复"/>
+        <!-- 反馈结束 -->
+    </application>
 </manifest>
