@@ -352,4 +352,22 @@ public class MapUtils {
         map.put("smskey", smskey);
         return map;
     }
+
+    /**
+     * 微信登录
+     *
+     * @param open_id  微信open_id
+     * @param nickname 微信昵称
+     * @param sex      性别
+     * @param headurl  头像URL地址
+     */
+    public static Map<String, String> getWeChatLogin(String open_id, String nickname, String sex, String headurl) {
+        Map<String, String> map = new HashMap<>();
+        map.putAll(MapUtils.getCurrencyMap());
+        map.put("open_id", open_id);
+        map.put("nickname", nickname);
+        map.put("sex", sex);
+        map.put("headurl", headurl);
+        return map;
+    }
 }

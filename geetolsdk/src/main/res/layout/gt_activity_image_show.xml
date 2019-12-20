@@ -30,7 +30,7 @@
             android:layout_centerInParent="true"/>
     </RelativeLayout>
 
-    <com.geetol.qhb.feedback.widget.MultiViewpager
+    <com.gtdev5.geetolsdk.mylibrary.feedback.widget.MultiViewpager
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

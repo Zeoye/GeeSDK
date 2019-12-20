@@ -122,7 +122,6 @@ public class HttpUtils {
         FormBody.Builder builder = new FormBody.Builder();
         Map<String, String> map = new TreeMap<String, String>();
         map.put("appid", CPResourceUtils.getString("appid"));
-//        map.put("key",CPResourceUtils.getString("appkey"));
         map.put("sign", null);
         map.put("device", DeviceUtils.getSpDeviceId());
         if (paramKey != null) {
@@ -157,26 +156,9 @@ public class HttpUtils {
                             str += "&" + "key" + "=" + CPResourceUtils.getString("appkey");
                         }
                     }
-//                    if (isFirst){
-//                        str = str.trim();
-//                        if (entry.getKey().equals("key")){
-//                            str += entry.getKey()+"="+entry.getValue();
-//                        }else {
-//                            str += entry.getKey() + "=" + android.util.Base64.encodeToString(entry.getValue().getBytes(), android.util.Base64.DEFAULT).trim();
-//                        }
-//                        isFirst  = !isFirst;
-//                    }else {
-//                        str = str.trim();
-//                        if (entry.getKey().equals("key")){
-//                            str += "&"+entry.getKey()+ "=" + entry.getValue();
-//                        }else {
-//                            str += "&" + entry.getKey() + "=" + android.util.Base64.encodeToString(entry.getValue().getBytes(), android.util.Base64.DEFAULT).trim();
-//                        }
-//                    }
                 }
                 str = str.replace("\n", "");//去除换行
                 str = str.replace("\\s", "");//去除空格
-//                Log.e("testaaaa",str);
                 isFirst = !isFirst;
                 alga.update(str.getBytes());
                 /**
@@ -336,154 +318,6 @@ public class HttpUtils {
         requestBody = builder.build();
         return requestBody;
     }
-
-    /**---------------------------------------------------------------------------分割线-------------------------------------------------------------------------*/
-
-
-//    /**
-//     *      内部请求方法
-//     * @param request
-//     * @return
-//     */
-//    private String getResult(Request request){
-//        Call newCall = mOkHttpClient.newCall(request);
-//        newCall.enqueue(new Callback() {
-//            @Override
-//            public void onFailure(Call call, IOException e) {
-//
-//            }
-//
-//            @Override
-//            public void onResponse(Call call, Response response) throws IOException {
-//                string = response.body().string();
-//                isHave = true;
-//            }
-//        });
-//
-//        while (isHave){
-//            if (string != null && !string.equals("")) {
-//                isHave = false;
-//                return string;
-//            }
-//        }
-//        return string;
-//    }
-
-//    /**
-//     *          返回泛型的json数据对象
-//     * @param url               请求路径
-//     * @param requestBody       表单
-//     * @param tClass            泛型
-//     * @param <T>               返回类型
-//     * @return
-//     */
-//    private <T> T backResponse(String url, RequestBody requestBody, Class<T> tClass){
-//        T t = null;
-//        request = new Request.Builder().url(url).post(requestBody).build();
-//        if (getResult(request) != null){
-//            t = GsonUtils.getFromClass(getResult(request),tClass);
-//        }
-//        return t;
-//    }
-
-    //    /**
-//     *      提供给外部调用的注册接口
-//     * @param tClass        泛型类
-//     * @param <T>           返回类型
-//     * @return
-//     */
-//    public static <T> T getRegister(Class<T> tClass){
-//        return getInstance().inner_getRegister(tClass);
-//    }
-//
-//    /**
-//     *      内部处理注册接口方法
-//     * @param tClass        泛型类
-//     * @param <T>           返回类型
-//     * @return
-//     */
-//    private <T> T inner_getRegister(Class<T> tClass){
-//        T t = null;
-//        RequestBody requestBody = getRequestBody(MapUtils.getRegistMap());
-//        t = backResponse(commonUrl + API.REGIST_DEVICE, requestBody, tClass);
-//        return t;
-//    }
-//
-//    /**
-//     *      提供给外部调用的更新数据接口
-//     * @param tClass        泛型类
-//     * @param <T>           返回类型
-//     * @return
-//     */
-//    public static <T> T getUpdate(Class<T> tClass){
-//        return getInstance().inner_getUpdate(tClass);
-//    }
-//
-//    /**
-//     *      内部处理更新数据接口方法
-//     * @param tClass        泛型类
-//     * @param <T>           返回类型
-//     * @return
-//     */
-//    private <T> T inner_getUpdate(Class<T> tClass){
-//        T t = null;
-//        RequestBody requestBody = getRequestBody(MapUtils.getCurrencyMap());
-//        t = backResponse(commonUrl + API.UPDATE,requestBody,tClass);
-//        return t;
-//    }
-//
-//    /**
-//     *      提供给外部调用了版本更新接口
-//     * @param tClass        泛型类
-//     * @param <T>           返回类型
-//     * @return
-//     */
-//    public static <T> T getNews(Class<T> tClass){
-//        return getInstance().inner_getNews(tClass);
-//    }
-//
-//    /**
-//     *      内部处理更新数据接口方法
-//     * @param tClass        泛型类
-//     * @param <T>           返回类型
-//     * @return
-//     */
-//    private <T> T inner_getNews(Class<T> tClass){
-//        T t = null;
-//        RequestBody requestBody = getRequestBody(MapUtils.getNewMap());
-//        t = backResponse(commonUrl+API.GETNEW,requestBody,tClass);
-//        return t;
-//    }
-//
-//    /**
-//     *      提供给外部调用的意见反馈接口
-//     * @param tClass        泛型类
-//     * @param content       文本内容
-//     * @param phone         联系方式
-//     * @param <T>           返回类型
-//     * @return
-//     */
-//    public static <T> T getFeedBack(Class<T> tClass,String content,String phone){
-//        return getInstance().inner_getFeedBack(tClass,content,phone);
-//    }
-//
-//    /**
-//     *      内部处理意见反馈接口
-//     * @param tClass        泛型类
-//     * @param content       文本内容
-//     * @param phone         联系方式
-//     * @param <T>           返回类型
-//     * @return
-//     */
-//    private <T> T inner_getFeedBack(Class<T>tClass,String content,String phone){
-//        T t = null;
-//        RequestBody requestBody = getRequestBody(MapUtils.getFeedBack(content, phone));
-//        t = backResponse(commonUrl+API.FEEDBACK,requestBody,tClass);
-//        return t;
-//    }
-    /**---------------------------------------------------------------------------分割线-------------------------------------------------------------------------*/
-
-    //
 
     /**
      * 获取app的下载链接
@@ -734,6 +568,23 @@ public class HttpUtils {
      */
     public void checkLogin(BaseCallback callback) {
         post(commonUrl + API.USER_LOGIN_CHECK, MapUtils.getCurrencyMap(), callback, API.USER_LOGIN_CHECK);
+    }
+
+    /**
+     * 微信登录
+     */
+    public void wechatLogin(String open_id, String nickname, String sex, String headurl, BaseCallback callback) {
+        alga.digest();
+        post(commonUrl + API.USER_WECHAT_LOGIN, MapUtils.getWeChatLogin(open_id, nickname, sex, headurl), callback);
+    }
+
+    /**
+     * 针对微信加密机制的问题，提供一个外部方法来解决
+     */
+    public void changeDigest() {
+        if (alga != null) {
+            alga.digest();
+        }
     }
 
     /**

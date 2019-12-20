@@ -138,4 +138,9 @@ public interface API {
      * // 2019.11.11新增
      */
     public static String USER_LOGIN_CHECK = "sms.statelogin";
+
+    /**
+     * 微信登录
+     */
+    public static String USER_WECHAT_LOGIN = "pub_wechat_login";
 }
