@@ -8,13 +8,16 @@ import java.io.Serializable;
  * 2018/1/24 17:25
  */
 
-public class Vip  implements Serializable {
+public class Vip implements Serializable {
     private String viplevel;
     private int count;
     private String time;
     private boolean isout;
     private String viptag;
-
+    /**
+     * 用户注册时间
+     */
+    private String ctime;
 
     public String getViptag() {
         return viptag;
@@ -54,5 +57,13 @@ public class Vip  implements Serializable {
 
     public void setViplevel(String viplevel) {
         this.viplevel = viplevel;
+    }
+
+    public String getCtime() {
+        return ctime;
+    }
+
+    public void setCtime(String ctime) {
+        this.ctime = ctime;
     }
 }

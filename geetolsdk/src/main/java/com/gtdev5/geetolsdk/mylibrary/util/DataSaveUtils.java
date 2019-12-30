@@ -1,6 +1,7 @@
 package com.gtdev5.geetolsdk.mylibrary.util;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.gtdev5.geetolsdk.mylibrary.beans.Ads;
@@ -10,8 +11,12 @@ import com.gtdev5.geetolsdk.mylibrary.beans.Swt;
 import com.gtdev5.geetolsdk.mylibrary.beans.UpdateBean;
 import com.gtdev5.geetolsdk.mylibrary.beans.Vip;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by ZL on 2019/10/29
@@ -201,5 +206,26 @@ public class DataSaveUtils {
             }
         }
         return null;
+    }
+
+    /**
+     * 判断用户是否是老用户(用于截图系列新旧用户不同页面逻辑判断)
+     * @param time 判断新旧用户的时间，格式yyyy-MM-dd HH:mm:ss
+     */
+    public boolean isOldUser(String time) {
+        SimpleDateFormat CurrentTime= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
+        Vip vip = getVip();
+        if (vip != null) {
+            try {
+                Date oldTime = CurrentTime.parse(vip.getCtime());
+                Date currentTime = CurrentTime.parse(time);
+                Log.e("Tag",
+                        "oldTime:" + oldTime.getTime() + ";currentTime:" + currentTime.getTime());
+                return oldTime.getTime() <= currentTime.getTime();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
     }
 }
