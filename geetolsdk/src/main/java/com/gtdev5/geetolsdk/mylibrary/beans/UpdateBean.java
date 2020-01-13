@@ -21,6 +21,7 @@ public class UpdateBean implements Serializable {
     private Contract contract;        //客服联系信息
     private String hpurl;              //帮助链接
     private Config config;             //微信appid
+    private String share_url;          //分享链接
 
     public UpdateBean(){
     }
@@ -103,5 +104,13 @@ public class UpdateBean implements Serializable {
 
     public void setConfig(Config config) {
         this.config = config;
+    }
+
+    public String getShare_url() {
+        return share_url;
+    }
+
+    public void setShare_url(String share_url) {
+        this.share_url = share_url;
     }
 }
