@@ -25,4 +25,11 @@
     <color name="gt_bg_reply_color">#e3e3e3</color>
     <!-- 反馈部分反馈类型选择框颜色 -->
     <color name="gt_check_color">#51ACE9</color>
+
+    <!-- 自动更新模块进度条未到达时显示的颜色 -->
+    <color name="gt_progress_unreached_color">#939393</color>
+    <!-- 自动更新模块进度条进度显示的颜色 -->
+    <color name="gt_progress_reached_color">#FF4081</color>
+    <!-- 自动更新模块进度字体的颜色 -->
+    <color name="gt_progress_text_color">#FF4081</color>
 </resources>

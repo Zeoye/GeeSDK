@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="gt_title_height">48dp</dimen>
+
+    <!-- 自动更新模块进度条进度字体大小 -->
+    <dimen name="gt_progress_text_size">12sp</dimen>
+    <!-- 自动更新模块进度条进度显示部分高度 -->
+    <dimen name="gt_progress_reached_bar_height">4dp</dimen>
+    <!-- 自动更新模块进度条进度未显示部分高度 -->
+    <dimen name="gt_progress_unreached_bar_height">3dp</dimen>
 </resources>

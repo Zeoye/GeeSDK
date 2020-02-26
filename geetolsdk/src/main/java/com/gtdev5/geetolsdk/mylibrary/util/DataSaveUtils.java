@@ -135,6 +135,16 @@ public class DataSaveUtils {
     }
 
     /**
+     * 获取分享链接
+     */
+    public String getShareUrl() {
+        if (updateBean != null) {
+            return updateBean.getShare_url();
+        }
+        return null;
+    }
+
+    /**
      * 获取客服信息(包含客服类型和客服联系方式)
      */
     public Contract getContract() {

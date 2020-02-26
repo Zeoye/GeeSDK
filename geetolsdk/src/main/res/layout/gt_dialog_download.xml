@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/gt_bg_rect_white">
+
+        <com.gtdev5.geetolsdk.mylibrary.widget.roundeimage.RoundedImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@mipmap/ic_launcher"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            app:riv_corner_radius="8dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#3D3D3D"
+            android:text="版本更新"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"/>
+
+        <TextView
+            android:id="@+id/tv_version"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#3D3D3D"
+            android:textSize="14sp"
+            android:text="v3.2.0"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="5dp"/>
+
+        <TextView
+            android:id="@+id/tv_update_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="多处功能优化，体验更流畅，服务更稳定，马上更新吧！"
+            android:textSize="14sp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"/>
+
+        <TextView
+            android:id="@+id/tv_update"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/gt_bg_update"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginBottom="12dp"
+            android:text="立即更新"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textColor="#ffffff" />
+
+        <ImageView
+            android:id="@+id/iv_update"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/gt_bg_update"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginBottom="12dp"
+            android:visibility="gone"/>
+
+        <com.gtdev5.geetolsdk.mylibrary.widget.NumberProgressBar
+            android:id="@+id/number_progressBar"
+            style="@style/UpdateAppNumberProgressBar_Red"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginBottom="12dp"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/iv_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:src="@mipmap/gt_close"
+        android:layout_marginTop="12dp" />
+
+    <com.gtdev5.geetolsdk.mylibrary.widget.PressedTextView
+        android:id="@+id/tv_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="取消"
+        android:textColor="#aaaaaa"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:visibility="gone"/>
+</LinearLayout>

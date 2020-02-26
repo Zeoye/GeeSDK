@@ -16,4 +16,33 @@
         <item name="android:windowBackground">@android:color/transparent</item> <!--窗口背景色透明-->
         <item name="android:backgroundDimEnabled">true</item> <!--背景是否模糊显示-->
     </style>
+
+    <style name="UpdateAppNumberProgressBar_Red">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="progress_max">100</item>
+        <item name="progress_current">0</item>
+        <item name="progress_unreached_color">@color/gt_progress_unreached_color</item>
+        <item name="progress_reached_color">@color/gt_progress_reached_color</item>
+        <item name="progress_text_size">@dimen/gt_progress_text_size</item>
+        <item name="progress_text_color">@color/gt_progress_text_color</item>
+        <item name="progress_reached_bar_height">@dimen/gt_progress_reached_bar_height</item>
+        <item name="progress_unreached_bar_height">@dimen/gt_progress_unreached_bar_height</item>
+    </style>
+
+    <declare-styleable name="UpdateAppNumberProgressBar">
+        <attr name="progress_current" format="integer" />
+        <attr name="progress_max" format="integer" />
+        <attr name="progress_unreached_color" format="color" />
+        <attr name="progress_reached_color" format="color" />
+        <attr name="progress_reached_bar_height" format="dimension" />
+        <attr name="progress_unreached_bar_height" format="dimension" />
+        <attr name="progress_text_size" format="dimension" />
+        <attr name="progress_text_color" format="color" />
+        <attr name="progress_text_offset" format="dimension" />
+        <attr name="progress_text_visibility" format="enum">
+            <enum name="visible" value="0" />
+            <enum name="invisible" value="1" />
+        </attr>
+    </declare-styleable>
 </resources>
