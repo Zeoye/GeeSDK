@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/gt_bg_rect_white"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/dialog_tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center_horizontal"
+        android:text="温馨提示"
+        android:textColor="#2e2e2e"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/dialog_tv_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|start"
+        android:layout_margin="12dp"
+        android:layout_weight="1"
+        android:gravity="center_vertical|start"
+        android:lineSpacingExtra="10dp"
+        android:textColor="#2e2e2e"
+        android:textSize="16sp"
+        android:text="网络异常，获取数据失败，软件无法正常启动，请检查网络，再重新启动软件。" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5px"
+        android:background="#666666" />
+
+    <com.gtdev5.geetolsdk.mylibrary.widget.PressedTextView
+        android:id="@+id/dialog_bt_ok"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:gravity="center"
+        android:text="确定"
+        android:textColor="@color/main_Color"
+        android:textSize="18sp" />
+</LinearLayout>
