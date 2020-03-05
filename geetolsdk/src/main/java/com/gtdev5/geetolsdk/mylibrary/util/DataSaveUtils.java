@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.gtdev5.geetolsdk.mylibrary.beans.Ads;
 import com.gtdev5.geetolsdk.mylibrary.beans.Contract;
 import com.gtdev5.geetolsdk.mylibrary.beans.Gds;
+import com.gtdev5.geetolsdk.mylibrary.beans.Region;
 import com.gtdev5.geetolsdk.mylibrary.beans.Swt;
 import com.gtdev5.geetolsdk.mylibrary.beans.UpdateBean;
 import com.gtdev5.geetolsdk.mylibrary.beans.Vip;
@@ -238,4 +239,25 @@ public class DataSaveUtils {
         }
         return false;
     }
+
+    /**
+     * 获取所有限制地址
+     */
+    public List<Region> getAllRegions() {
+        if (updateBean != null) {
+            return updateBean.getRegion();
+        }
+        return null;
+    }
+
+    /**
+     * 获取ip地址
+     */
+    public String getIp() {
+        if (updateBean != null) {
+            return updateBean.getIp();
+        }
+        return null;
+    }
+
 }

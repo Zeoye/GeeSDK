@@ -22,6 +22,8 @@ public class UpdateBean implements Serializable {
     private String hpurl;              //帮助链接
     private Config config;             //微信appid
     private String share_url;          //分享链接
+    private List<Region> region;       //限制地址
+    private String ip;                 //ip地址
 
     public UpdateBean(){
     }
@@ -112,5 +114,21 @@ public class UpdateBean implements Serializable {
 
     public void setShare_url(String share_url) {
         this.share_url = share_url;
+    }
+
+    public List<Region> getRegion() {
+        return region;
+    }
+
+    public void setRegion(List<Region> region) {
+        this.region = region;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
     }
 }

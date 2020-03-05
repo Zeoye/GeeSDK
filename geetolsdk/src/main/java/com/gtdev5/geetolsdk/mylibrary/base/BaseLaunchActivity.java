@@ -96,6 +96,9 @@ public abstract class BaseLaunchActivity extends BaseGTActivity {
         if (TextUtils.isEmpty(DeviceUtils.getSpDeviceId()) && TextUtils.isEmpty(DeviceUtils.readDeviceID(mContext))) {
             // app和sd卡都没有，都存一份
             String imei = DeviceUtils.getIMEI(this);
+            if (TextUtils.isEmpty(imei) || imei.equals("")) {
+                imei = DeviceUtils.getUUID();
+            }
             DeviceUtils.saveDeviceID(imei, mContext);
             DeviceUtils.putSpDeviceId(imei);
         } else if (TextUtils.isEmpty(DeviceUtils.getSpDeviceId()) && !TextUtils.isEmpty(DeviceUtils.readDeviceID(mContext))) {
