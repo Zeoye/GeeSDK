@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -46,10 +47,18 @@ public class DeviceUtils {
             try {
                 // 适配双卡情况
                 Method method = tm.getClass().getMethod("getImei", int.class);
-                return (String) method.invoke(tm, 0);
+                if (!TextUtils.isEmpty((String) method.invoke(tm, 0))) {
+                    return (String) method.invoke(tm, 0);
+                } else {
+                    return getUUID();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
-                return tm.getDeviceId();
+                if (!TextUtils.isEmpty(tm.getDeviceId())) {
+                    return tm.getDeviceId();
+                } else {
+                    return getUUID();
+                }
             }
         }
         return getUUID();
@@ -150,6 +159,7 @@ public class DeviceUtils {
      * 保存内容到SD卡中
      */
     public static void saveDeviceID(String str, Context context) {
+        if (TextUtils.isEmpty(str)) return;
         File file = getDevicesDir(context);
         try {
             FileOutputStream fos = new FileOutputStream(file);
