@@ -170,6 +170,7 @@ public abstract class BaseLaunchActivity extends BaseGTActivity {
                 @Override
                 public void onFailure(Request request, Exception e) {
                     if (updateBean != null) {
+                        getAliOssData();
                         jumpToNext();
                         return;
                     }
@@ -180,6 +181,7 @@ public abstract class BaseLaunchActivity extends BaseGTActivity {
                 public void onSuccess(Response response, UpdateBean o) {
                     if (o != null && o.getIssucc()) {
                         // 数据获取成功跳转到下个页面
+                        getAliOssData();
                         jumpToNext();
                     } else {
                         // 更新失败，弹出提示
@@ -192,6 +194,7 @@ public abstract class BaseLaunchActivity extends BaseGTActivity {
                 @Override
                 public void onError(Response response, int errorCode, Exception e) {
                     if (updateBean != null) {
+                        getAliOssData();
                         jumpToNext();
                         return;
                     }
@@ -200,6 +203,7 @@ public abstract class BaseLaunchActivity extends BaseGTActivity {
             });
         } else {
             if (updateBean != null) {
+                getAliOssData();
                 jumpToNext();
                 return;
             }
@@ -241,6 +245,32 @@ public abstract class BaseLaunchActivity extends BaseGTActivity {
                 });
             }
         }
+    }
+
+    /**
+     * 获取阿里oss数据
+     */
+    private void getAliOssData() {
+        String ossData = SpUtils.getInstance().getString(Contants.ALI_OSS_PARAM);
+        // 若已经获取过阿里oss数据，则无需再获取
+        if (!TextUtils.isEmpty(ossData) && !ossData.equals("null")) return;
+        HttpUtils.getInstance().getAliOss(new BaseCallback<ResultBean>() {
+            @Override
+            public void onRequestBefore() {
+            }
+
+            @Override
+            public void onFailure(Request request, Exception e) {
+            }
+
+            @Override
+            public void onSuccess(Response response, ResultBean o) {
+            }
+
+            @Override
+            public void onError(Response response, int errorCode, Exception e) {
+            }
+        });
     }
 
     @Override
@@ -325,10 +355,12 @@ public abstract class BaseLaunchActivity extends BaseGTActivity {
                 listener.OnDialogExit();
             }
         });
-        dialog.show();
-        dialog.setText(R.id.dialog_tv_title, name);
-        dialog.setText(R.id.dialog_tv_text, content);
-        dialog.setText(R.id.dialog_bt_ok, btnText);
+        if (!isFinishing()) {
+            dialog.show();
+            dialog.setText(R.id.dialog_tv_title, name);
+            dialog.setText(R.id.dialog_tv_text, content);
+            dialog.setText(R.id.dialog_bt_ok, btnText);
+        }
     }
 
     /**
@@ -343,8 +375,10 @@ public abstract class BaseLaunchActivity extends BaseGTActivity {
                 finish();
             }
         });
-        dialog.show();
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setCancelable(false);
+        if (!isFinishing()) {
+            dialog.show();
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.setCancelable(false);
+        }
     }
 }

@@ -5,9 +5,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.v4.graphics.ColorUtils;
+import android.text.TextUtils;
 import android.util.Base64;
 
 import com.gtdev5.geetolsdk.R;
+import com.gtdev5.geetolsdk.mylibrary.beans.AliOssBean;
+import com.gtdev5.geetolsdk.mylibrary.util.Utils;
 import com.gyf.barlibrary.ImmersionBar;
 
 import java.io.ByteArrayOutputStream;
@@ -121,5 +124,30 @@ public class GTUtils {
         Bitmap bitmap = BitmapFactory.decodeStream(input, null, bitmapOptions);
         input.close();
         return bitmap;//再进行质量压缩
+    }
+
+    /**
+     * 显示阿里oss图片
+     * @param path 图片地址
+     */
+    public static String showAliOssPic(String path) {
+        AliOssBean aliOssBean = Utils.getAliOssParam();
+        if (aliOssBean != null && !TextUtils.isEmpty(aliOssBean.getBucketName())) {
+            return "http://" + aliOssBean.getBucketName() + "." + aliOssBean.getEndpoint() + "/" + path;
+        }
+        return null;
+    }
+
+    /**
+     * 根据图片路径获取图片名称
+     */
+    public static String getPicName(String path) {
+        if (path.contains("/")) {
+            String[] pic = path.split("/");
+            if (pic.length > 1) {
+                return pic[pic.length - 1];
+            }
+        }
+        return "";
     }
 }

@@ -1,5 +1,6 @@
 package com.gtdev5.geetolsdk.mylibrary.feedback.adapters;
 
+import android.app.Activity;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
@@ -26,6 +27,15 @@ public class GTImageShowAdapter extends BaseQuickAdapter<ImageBean, BaseViewHold
     protected void convert(BaseViewHolder helper, ImageBean item) {
         helper.setVisible(R.id.iv_del, false);
         ImageView imageView = helper.getView(R.id.iv_pic);
-        Glide.with(mContext).load(item.getPath()).centerCrop().crossFade().into(imageView);
+        try {
+            if (mContext != null) {
+                Activity activity = (Activity) mContext;
+                if (!activity.isFinishing()) {
+                    Glide.with(activity).load(item.getPath()).into(imageView);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

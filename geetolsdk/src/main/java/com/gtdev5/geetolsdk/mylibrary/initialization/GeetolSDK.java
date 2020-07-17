@@ -8,6 +8,8 @@ import com.gtdev5.geetolsdk.mylibrary.util.CPResourceUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.MapUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.SpUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.ToastUtils;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.tencent.bugly.crashreport.CrashReport;
 
 /**
@@ -31,9 +33,9 @@ public class GeetolSDK {
             CPResourceUtils.init(mContext);
             ToastUtils.init(mContext);
             MapUtils.init(mContext);
-
             initCrashReport();
-
+            ImageLoaderConfiguration loaderConfiguration = ImageLoaderConfiguration.createDefault(mContext);
+            ImageLoader.getInstance().init(loaderConfiguration);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -57,9 +59,4 @@ public class GeetolSDK {
         init(context);
         SpUtils.getInstance().putString(Contants.COMMON_URL,commurl);
     }
-
-
-
-
-
 }

@@ -1,5 +1,6 @@
 package com.gtdev5.geetolsdk.mylibrary.feedback.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
@@ -9,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.gtdev5.geetolsdk.R;
 import com.gtdev5.geetolsdk.mylibrary.util.Utils;
 
@@ -54,9 +54,14 @@ public class GTImageAddAdapter extends RecyclerView.Adapter<GTImageAddAdapter.My
             });
         } else {
             try {
-                Glide.with(context).load(Uri.parse(datas.get(position))).diskCacheStrategy(DiskCacheStrategy.ALL).into(holder.iv_pic);
+                if (context != null) {
+                    Activity activity = (Activity) context;
+                    if (!activity.isFinishing()) {
+                        Glide.with(activity).load(Uri.parse(datas.get(position))).into(holder.iv_pic);
+                    }
+                }
             } catch (Exception e) {
-                Glide.with(context).load(Uri.parse(datas.get(position))).diskCacheStrategy(DiskCacheStrategy.ALL).into(holder.iv_pic);
+                e.printStackTrace();
             }
             holder.iv_pic.setOnClickListener(v -> {
                 listener.OnItemClick(position);
