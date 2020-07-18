@@ -50,7 +50,7 @@ public interface API {
     /**
      * 添加服务单
      */
-    public static String ADD_SERVICE = "sup.add_service";
+    public static String ADD_SERVICE = "sup.add_service_oss";
 
     /**
      * 获取服务单
@@ -60,12 +60,12 @@ public interface API {
     /**
      * 获取服务单详情
      */
-    public static String GET_SERVICE_DETAILS = "sup.get_service_details";
+    public static String GET_SERVICE_DETAILS = "sup.get_service_details_oss";
 
     /**
      * 添加服务单回复
      */
-    public static String ADD_REPLEY = "sup.add_reply";
+    public static String ADD_REPLEY = "sup.add_reply_oss";
 
     /**
      * 结束服务单

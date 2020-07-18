@@ -156,7 +156,7 @@ public class MapUtils {
         map.put("title", title);
         map.put("describe", descibe);
         map.put("type", type);
-        map.put("img", img);
+        map.put("img_url", img);
         return map;
     }
 
@@ -201,7 +201,7 @@ public class MapUtils {
         map.putAll(getCurrencyMap());
         map.put("service_id", String.valueOf(service_id));
         map.put("desc", repley);
-        map.put("img", img);
+        map.put("img_url", img);
         return map;
     }
 
