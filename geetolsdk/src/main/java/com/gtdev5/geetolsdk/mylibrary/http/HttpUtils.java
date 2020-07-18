@@ -168,7 +168,7 @@ public class HttpUtils {
                     String key = entry.getKey();
                     String value = entry.getValue();
                     if (value == null) {
-                        value = null;
+                        value = "";
                     }
                     if (key.equals("sign")) {
                         value = Utils.byte2hex(alga.digest());
@@ -306,7 +306,7 @@ public class HttpUtils {
             String key = entry.getKey();
             String value = entry.getValue();
             if (value == null) {
-                value = null;
+                value = "";
             }
             if (key.equals("sign")) {
                 value = Utils.byte2hex(alga.digest());
