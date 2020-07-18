@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.bumptech.glide.Glide;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.gtdev5.geetolsdk.mylibrary.beans.ImageBean;
+import com.gtdev5.geetolsdk.mylibrary.feedback.utils.GTUtils;
 
 import java.util.List;
 
@@ -61,7 +62,7 @@ public class GTImagePagerAdapter extends PagerAdapter {
             if (context != null) {
                 Activity activity = (Activity) context;
                 if (!activity.isFinishing()) {
-                    Glide.with(activity).load(datas.get(position).getPath()).into(photoView);
+                    Glide.with(activity).load(GTUtils.showAliOssPic(datas.get(position).getPath())).into(photoView);
                 }
             }
         } catch (Exception e) {

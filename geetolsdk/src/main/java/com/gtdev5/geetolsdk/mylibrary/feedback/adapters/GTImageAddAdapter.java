@@ -2,7 +2,6 @@ package com.gtdev5.geetolsdk.mylibrary.feedback.adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,7 +56,7 @@ public class GTImageAddAdapter extends RecyclerView.Adapter<GTImageAddAdapter.My
                 if (context != null) {
                     Activity activity = (Activity) context;
                     if (!activity.isFinishing()) {
-                        Glide.with(activity).load(Uri.parse(datas.get(position))).into(holder.iv_pic);
+                        Glide.with(activity).load(datas.get(position)).into(holder.iv_pic);
                     }
                 }
             } catch (Exception e) {

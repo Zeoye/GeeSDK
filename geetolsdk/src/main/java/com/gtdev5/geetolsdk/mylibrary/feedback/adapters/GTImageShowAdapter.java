@@ -9,6 +9,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.gtdev5.geetolsdk.R;
 import com.gtdev5.geetolsdk.mylibrary.beans.ImageBean;
+import com.gtdev5.geetolsdk.mylibrary.feedback.utils.GTUtils;
 
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class GTImageShowAdapter extends BaseQuickAdapter<ImageBean, BaseViewHold
             if (mContext != null) {
                 Activity activity = (Activity) mContext;
                 if (!activity.isFinishing()) {
-                    Glide.with(activity).load(item.getPath()).into(imageView);
+                    Glide.with(activity).load(GTUtils.showAliOssPic(item.getPath())).into(imageView);
                 }
             }
         } catch (Exception e) {
