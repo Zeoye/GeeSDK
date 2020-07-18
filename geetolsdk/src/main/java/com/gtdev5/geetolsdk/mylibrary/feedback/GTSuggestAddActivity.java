@@ -129,12 +129,11 @@ public class GTSuggestAddActivity extends BaseGTActivity {
                 AliOssBatchPicUtils.getInstance(this).uploadBatchFile(aliOssBean.getBucketName(),
                         mPicInfos, (success, failure) -> {
                             if (success != null && success.size() > 0) {
-                                StringBuilder sb = new StringBuilder("");
+                                List<String> imgList = new ArrayList<>();
                                 for (PicInfo picInfo : success) {
-                                    sb.append(picInfo.getName());
-                                    sb.append(",");
+                                    imgList.add(picInfo.getName());
                                 }
-                                addSuggestData(title, content, sb.toString());
+                                addSuggestData(title, content, Utils.list2String(imgList));
                             }
                         });
             }
