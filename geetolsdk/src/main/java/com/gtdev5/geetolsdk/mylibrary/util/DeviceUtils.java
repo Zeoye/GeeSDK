@@ -3,6 +3,7 @@ package com.gtdev5.geetolsdk.mylibrary.util;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Environment;
 import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
@@ -41,24 +42,31 @@ public class DeviceUtils {
      * 获取IMEI(Android版本28及28以下)
      */
     public static String getIMEI(Context context) {
-        TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE)
-                == PackageManager.PERMISSION_GRANTED) {
+        if (Build.VERSION.SDK_INT <= 28) {
             try {
-                // 适配双卡情况
-                Method method = tm.getClass().getMethod("getImei", int.class);
-                if (!TextUtils.isEmpty((String) method.invoke(tm, 0))) {
-                    return (String) method.invoke(tm, 0);
-                } else {
-                    return getUUID();
+                TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+                if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE)
+                        == PackageManager.PERMISSION_GRANTED) {
+                    try {
+                        // 适配双卡情况
+                        Method method = tm.getClass().getMethod("getImei", int.class);
+                        if (!TextUtils.isEmpty((String) method.invoke(tm, 0))) {
+                            return (String) method.invoke(tm, 0);
+                        } else {
+                            return getUUID();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        if (!TextUtils.isEmpty(tm.getDeviceId())) {
+                            return tm.getDeviceId();
+                        } else {
+                            return getUUID();
+                        }
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                if (!TextUtils.isEmpty(tm.getDeviceId())) {
-                    return tm.getDeviceId();
-                } else {
-                    return getUUID();
-                }
+                return getUUID();
             }
         }
         return getUUID();
