@@ -16,7 +16,6 @@ import com.gtdev5.geetolsdk.mylibrary.callback.BaseCallback;
 import com.gtdev5.geetolsdk.mylibrary.callback.DataCallBack;
 import com.gtdev5.geetolsdk.mylibrary.contants.API;
 import com.gtdev5.geetolsdk.mylibrary.contants.Contants;
-import com.gtdev5.geetolsdk.mylibrary.initialization.GeetolSDK;
 import com.gtdev5.geetolsdk.mylibrary.util.CPResourceUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.DataSaveUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.DeviceUtils;
@@ -24,7 +23,6 @@ import com.gtdev5.geetolsdk.mylibrary.util.GsonUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.MapUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.SpUtils;
 import com.gtdev5.geetolsdk.mylibrary.util.Utils;
-import com.tencent.bugly.Bugly;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -599,10 +597,7 @@ public class HttpUtils {
                 if (response.isSuccessful()) {
                     //返回成功回调
                     String result = response.body().string();
-                    //如果是注册设备，获取腾讯bugly 错误日子反馈平台
-                    if (requestType.equals(API.REGIST_DEVICE)) {
-                        initCrashRePort(result);
-                    } else if (requestType.equals(API.USER_LOGIN) || requestType.equals(API.USER_LOGIN_CODE)) {
+                    if (requestType.equals(API.USER_LOGIN) || requestType.equals(API.USER_LOGIN_CODE)) {
                         // 保存用户信息
                         LoginInfoBean info = GsonUtils.getFromClass(result, LoginInfoBean.class);
                         if (info != null && info.isIssucc()) {
@@ -657,35 +652,6 @@ public class HttpUtils {
                 }
             }
         });
-    }
-
-    /**
-     * 初始化错误报告的参数（获取并保存腾讯buglyID）
-     *
-     * @param o
-     */
-    private void initCrashRePort(String o) {
-        try {
-            ResultBean resultBean = GsonUtils.getFromClass(o, ResultBean.class);
-            if (resultBean != null && resultBean.isIssucc()) {
-                /*for (Swt swt:o.getSwt()){
-                    if (swt.getName().equals(Contants.ERROR_REPORT)){
-                        if (!TextUtils.isEmpty(swt.getVal2())){
-                            SpUtils.getInstance().putString(Contants.CRESH_REPORT_ID,swt.getVal2());
-                        }
-                    }
-                }*/
-                if (!TextUtils.isEmpty(resultBean.getCode())) {
-                    if (SpUtils.getInstance().getBoolean(Contants.HAS_SET_FINAL_ERROR_REPORT, false))
-                        SpUtils.getInstance().putString(Contants.CRESH_REPORT_ID, resultBean.getCode());
-                    //注册后第一次初始化bugly
-                    Bugly.init(GeetolSDK.getmContext(), resultBean.getCode(), false);
-                    Log.d("geesdk-----------》", "腾讯bugly初始化成功");
-                }
-            }
-        } catch (Exception e) {
-            Log.e("geesdk-----------》", "腾讯bugly初始化失败：" + e.toString());
-        }
     }
 
     /**

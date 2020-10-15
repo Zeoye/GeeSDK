@@ -1,4 +1,4 @@
-package com.gtdev5.geetolsdk.mylibrary.feedback.widget;
+package com.gtdev5.geetolsdk.mylibrary.widget;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;

@@ -16,29 +16,5 @@
         android:allowBackup="false"
         android:persistent="true"
         android:supportsRtl="true">
-        <!-- 反馈开始 -->
-        <activity android:name=".mylibrary.feedback.GTSuggestListActivity"
-            android:screenOrientation="portrait"
-            android:label="反馈列表"/>
-        <activity android:name=".mylibrary.feedback.GTSuggestAddActivity"
-            android:screenOrientation="portrait"
-            android:label="添加反馈"/>
-        <activity android:name=".mylibrary.feedback.GTSuggestDetailActivity"
-            android:screenOrientation="portrait"
-            android:label="反馈详情"/>
-        <activity android:name=".mylibrary.feedback.GTImageShowActivity"
-            android:screenOrientation="portrait"
-            android:label="图片展示"/>
-        <activity android:name=".mylibrary.feedback.GTSuggestReplyActivity"
-            android:screenOrientation="portrait"
-            android:label="反馈回复"/>
-        <!-- 反馈结束 -->
-        <!-- 图片选择框架配置 -->
-        <activity
-            android:name="cn.finalteam.rxgalleryfinal.ui.activity.MediaActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.yalantis.ucrop.UCropActivity"
-            android:screenOrientation="portrait" />
     </application>
 </manifest>

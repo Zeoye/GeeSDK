@@ -353,20 +353,6 @@ public class Utils {
     }
 
     /**
-     * 不使用服务器提供的buglyID 本地强行设置
-     * 如果buglyID为空则取消本地设置的buglyid
-     *
-     * @param buglyID
-     */
-    public static void setLocalBuglyID(String buglyID) {
-        if (Utils.isEmpty(buglyID)) {
-            SpUtils.getInstance().putBoolean(Contants.HAS_SET_FINAL_ERROR_REPORT, false);
-        }
-        SpUtils.getInstance().putBoolean(Contants.HAS_SET_FINAL_ERROR_REPORT, true);
-        SpUtils.getInstance().putString(Contants.CRESH_REPORT_ID, buglyID);
-    }
-
-    /**
      * 设置用户信息
      *
      * @param userId 用户id
