@@ -381,20 +381,6 @@ public class HttpUtils {
     }
 
     /**
-     * 检查识别码是否存在
-     */
-    public void postImeiExit(BaseCallback callback) {
-        post(commonUrl + API.GET_IMEI_EXIT, MapUtils.getDeviceMap(), callback);
-    }
-
-    /**
-     * 设备识别码替换
-     */
-    public void postImeiReplace(BaseCallback callback) {
-        post(commonUrl + API.GET_IMEI_REPLACE, MapUtils.getReplaceImei(), callback);
-    }
-
-    /**
      * 提供给外部调用的注册接口
      *
      * @param callback 回调函数

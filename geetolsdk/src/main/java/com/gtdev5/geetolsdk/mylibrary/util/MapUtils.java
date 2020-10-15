@@ -85,7 +85,7 @@ public class MapUtils {
     public static Map<String, String> getRegistMap() {
         Map<String, String> map = new HashMap<>();
         map.putAll(getCurrencyMap());
-        map.put("mac", MacUtils.getMacAddr(mContext));
+        map.put("mac", "");
         map.put("brand", SystemUtils.getDeviceBrand());
         map.put("model", SystemUtils.getSystemModel());
         map.put("widthpix", SystemUtils.getWith(mContext) + "");
@@ -321,19 +321,6 @@ public class MapUtils {
         Map<String, String> map = new HashMap<>();
         map.putAll(getCurrencyMap());
         map.put("name", name);
-        return map;
-    }
-
-    /**
-     * 通用Map
-     * (无参的方法通用调取)
-     *
-     * @return
-     */
-    public static Map<String, String> getReplaceImei() {
-        Map<String, String> map = new HashMap<>();
-        map.putAll(getDeviceMap());
-        map.put("new_imei", MacUtils.getMac(mContext));
         return map;
     }
 

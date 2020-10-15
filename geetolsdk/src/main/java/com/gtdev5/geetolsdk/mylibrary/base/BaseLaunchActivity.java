@@ -348,10 +348,14 @@ public abstract class BaseLaunchActivity extends BaseGTActivity {
         dialog.setOnCenterClickListener((dial, view) -> {
             if (view.getId() == R.id.dialog_bt_ok) {
                 listener.OnDialogOK();
-                dialog.dismiss();
+                if (!isFinishing()) {
+                    dialog.dismiss();
+                }
             }
             if (view.getId() == R.id.dialog_bt_dis) {
-                dialog.dismiss();
+                if (!isFinishing()) {
+                    dialog.dismiss();
+                }
                 listener.OnDialogExit();
             }
         });
@@ -371,7 +375,9 @@ public abstract class BaseLaunchActivity extends BaseGTActivity {
         CenterDialog dialog = new CenterDialog(mActivity, R.layout.gt_dialog_restart_app, ids, false);
         dialog.setOnCenterClickListener((dial, view) -> {
             if (view.getId() == R.id.dialog_bt_ok) {
-                dialog.dismiss();
+                if (!isFinishing()) {
+                    dialog.dismiss();
+                }
                 finish();
             }
         });

@@ -118,16 +118,6 @@ public interface API {
     public static String GET_ALIOSS = "get_ali_oss";
 
     /**
-     * 检查识别码是否存在
-     */
-    public static String GET_IMEI_EXIT = "imei.exist";
-
-    /**
-     * 设备识别码替换
-     */
-    public static String GET_IMEI_REPLACE = "imei.replace";
-
-    /**
      * 手机动态码登陆
      * // 2019.11.11新增
      */

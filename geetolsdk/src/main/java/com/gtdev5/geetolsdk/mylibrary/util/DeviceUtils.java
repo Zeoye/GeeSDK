@@ -1,6 +1,7 @@
 package com.gtdev5.geetolsdk.mylibrary.util;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -41,6 +42,7 @@ public class DeviceUtils {
     /**
      * 获取IMEI(Android版本28及28以下)
      */
+    @SuppressLint("HardwareIds")
     public static String getIMEI(Context context) {
         if (Build.VERSION.SDK_INT <= 28) {
             try {
@@ -49,16 +51,24 @@ public class DeviceUtils {
                         == PackageManager.PERMISSION_GRANTED) {
                     try {
                         // 适配双卡情况
-                        Method method = tm.getClass().getMethod("getImei", int.class);
-                        if (!TextUtils.isEmpty((String) method.invoke(tm, 0))) {
-                            return (String) method.invoke(tm, 0);
+                        if (tm != null) {
+                            Method method = tm.getClass().getMethod("getImei", int.class);
+                            if (!TextUtils.isEmpty((String) method.invoke(tm, 0))) {
+                                return (String) method.invoke(tm, 0);
+                            } else {
+                                return getUUID();
+                            }
                         } else {
                             return getUUID();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
-                        if (!TextUtils.isEmpty(tm.getDeviceId())) {
-                            return tm.getDeviceId();
+                        if (tm != null) {
+                            if (!TextUtils.isEmpty(tm.getDeviceId())) {
+                                return tm.getDeviceId();
+                            } else {
+                                return getUUID();
+                            }
                         } else {
                             return getUUID();
                         }
