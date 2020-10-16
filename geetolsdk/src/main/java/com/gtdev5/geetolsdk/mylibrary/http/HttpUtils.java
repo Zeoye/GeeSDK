@@ -212,10 +212,6 @@ public class HttpUtils {
 
     /**
      * 分发失败的时候回调
-     *
-     * @param request
-     * @param e
-     * @param callBack
      */
     private void deliverDataFailure(final Request request, final IOException e, final DataCallBack callBack) {
         mHandler.post(() -> {
@@ -227,9 +223,6 @@ public class HttpUtils {
 
     /**
      * 分发成功的时候回调
-     *
-     * @param result
-     * @param callBack
      */
     private void deliverDataSuccess(final String result, final DataCallBack callBack) {
         mHandler.post(() -> {
@@ -245,9 +238,6 @@ public class HttpUtils {
 
     /**
      * map根据key值比较大小
-     *
-     * @param map
-     * @return
      */
     private static Map<String, String> sortMapByKey(Map<String, String> map) {
         if (map == null || map.isEmpty()) {
@@ -261,8 +251,6 @@ public class HttpUtils {
     /**
      * 内部处理Map集合
      * 得到from表单 (post请求)
-     *
-     * @return
      */
     private RequestBody getRequestBody(Map<String, String> map) {
         RequestBody requestBody = null;
@@ -294,7 +282,6 @@ public class HttpUtils {
         str = str.replace("\n", "");//去除换行
         str = str.replace("\\s", "");//去除空格
         Log.e("请求参数：", "string:" + str);
-//        Log.e("testaaaa",str);
         isFirst = !isFirst;
         alga.update(str.getBytes());
         /**
@@ -327,7 +314,7 @@ public class HttpUtils {
     }
 
     /**
-     * 提供给外部调用的添加服务单接口
+     * 添加反馈
      *
      * @param callback 回调函数
      */
@@ -336,43 +323,34 @@ public class HttpUtils {
     }
 
     /**
-     * 获取服务单接口
-     *
-     * @param page
-     * @param limit
-     * @param callback
+     * 获取反馈列表
      */
     public void postGetServices(int page, int limit, BaseCallback callback) {
         post(commonUrl + API.GET_SERVICE, MapUtils.getGetServiceMap(page, limit), callback);
     }
 
     /**
-     * 获取服务单详情的接口
-     *
-     * @param service_id
-     * @param callback
+     * 获取反馈详情
      */
     public void postGetServicesDetails(int service_id, BaseCallback callback) {
         post(commonUrl + API.GET_SERVICE_DETAILS, MapUtils.getServiceDetialsMap(service_id), callback);
     }
 
     /**
-     * 添加服务单回复接口
+     * 添加反馈回复
      *
      * @param service_id 服务单id
      * @param repley     回复内容
      * @param img        回复图片   base64处理的图片 多个用，分割
-     * @param callback
      */
     public void postAddRepley(int service_id, String repley, String img, BaseCallback callback) {
         post(commonUrl + API.ADD_REPLEY, MapUtils.getAddRepleyMap(service_id, repley, img), callback);
     }
 
     /**
-     * 结束服务
+     * 结束反馈
      *
      * @param id       服务单id
-     * @param callback
      */
     public void postEndService(int id, BaseCallback callback) {
         post(commonUrl + API.END_SERVICE, MapUtils.getServiceDetialsMap(id), callback);
@@ -548,7 +526,6 @@ public class HttpUtils {
 
     /**
      * 登陆校验
-     * @param callback
      */
     public void checkLogin(BaseCallback callback) {
         post(commonUrl + API.USER_LOGIN_CHECK, MapUtils.getCurrencyMap(), callback, API.USER_LOGIN_CHECK);
@@ -596,56 +573,61 @@ public class HttpUtils {
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     //返回成功回调
-                    String result = response.body().string();
-                    if (requestType.equals(API.USER_LOGIN) || requestType.equals(API.USER_LOGIN_CODE)) {
-                        // 保存用户信息
-                        LoginInfoBean info = GsonUtils.getFromClass(result, LoginInfoBean.class);
-                        if (info != null && info.isIssucc()) {
-                            Utils.setLoginInfo(info.getData().getUser_id(),
-                                    info.getData().getUkey(),
-                                    info.getData().getHeadimg());
-                        }
-                    } else if (requestType.equals(API.GET_ALIOSS)) {
-                        // 获取阿里云信息
-                        try {
-                            JSONObject jsonObject = new JSONObject(result);
-                            if (jsonObject.getBoolean("issucc")) {
-                                String data = jsonObject.getString("data");
-                                if (!TextUtils.isEmpty(data)) {
-                                    Log.e("哈哈", "阿里云数据：" + data);
-                                    Utils.setAliOssParam(data);
-                                }
+                    try {
+                        String result = response.body().string();
+                        Log.e("请求返回数据：", result);
+                        if (requestType.equals(API.USER_LOGIN) || requestType.equals(API.USER_LOGIN_CODE)) {
+                            // 保存用户信息
+                            LoginInfoBean info = GsonUtils.getFromClass(result, LoginInfoBean.class);
+                            if (info != null && info.isIssucc()) {
+                                Utils.setLoginInfo(info.getData().getUser_id(),
+                                        info.getData().getUkey(),
+                                        info.getData().getHeadimg());
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                        } else if (requestType.equals(API.GET_ALIOSS)) {
+                            // 获取阿里云信息
+                            try {
+                                JSONObject jsonObject = new JSONObject(result);
+                                if (jsonObject.getBoolean("issucc")) {
+                                    String data = jsonObject.getString("data");
+                                    if (!TextUtils.isEmpty(data)) {
+                                        Log.e("请求返回数据", "阿里云数据：" + data);
+                                        Utils.setAliOssParam(data);
+                                    }
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        } else if (requestType.equals(API.UPDATE)) {
+                            // 获取所有数据
+                            UpdateBean updateBean = GsonUtils.getFromClass(result, UpdateBean.class);
+                            if (updateBean != null) {
+                                DataSaveUtils.getInstance().saveAppData(updateBean);
+                            }
+                        } else if (requestType.equals(API.USER_LOGIN_CHECK)) {
+                            // 校验登陆
+                            ResultBean resultBean = GsonUtils.getFromClass(result, ResultBean.class);
+                            if (resultBean != null && !resultBean.isIssucc()) {
+                                // 已在别的设备登陆，清空本机登陆状态
+                                Utils.setLoginInfo("", "", "");
+                            }
                         }
-                    } else if (requestType.equals(API.UPDATE)) {
-                        // 获取所有数据
-                        UpdateBean updateBean = GsonUtils.getFromClass(result, UpdateBean.class);
-                        if (updateBean != null) {
-                            DataSaveUtils.getInstance().saveAppData(updateBean);
+                        if (callback.mType == String.class) {
+                            //如果我们需要返回String类型
+                            callbackSuccess(response, result, callback);
+                        } else {
+                            //如果返回是其他类型,则用Gson去解析
+                            try {
+                                Object o = gson.fromJson(result, callback.mType);
+                                callbackSuccess(response, o, callback);
+                            } catch (JsonSyntaxException e) {
+                                e.printStackTrace();
+                                callbackError(response, callback, e);
+                            }
                         }
-                    } else if (requestType.equals(API.USER_LOGIN_CHECK)) {
-                        // 校验登陆
-                        ResultBean resultBean = GsonUtils.getFromClass(result, ResultBean.class);
-                        if (resultBean != null && !resultBean.isIssucc()) {
-                            // 已在别的设备登陆，清空本机登陆状态
-                            Utils.setLoginInfo("", "", "");
-                        }
-                    }
-                    Log.e("请求数据：", result);
-                    if (callback.mType == String.class) {
-                        //如果我们需要返回String类型
-                        callbackSuccess(response, result, callback);
-                    } else {
-                        //如果返回是其他类型,则用Gson去解析
-                        try {
-                            Object o = gson.fromJson(result, callback.mType);
-                            callbackSuccess(response, o, callback);
-                        } catch (JsonSyntaxException e) {
-                            e.printStackTrace();
-                            callbackError(response, callback, e);
-                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        callbackError(response, callback, null);
                     }
                 } else {
                     callbackError(response, callback, null);
@@ -659,7 +641,6 @@ public class HttpUtils {
      *
      * @param url    请求路径
      * @param params from表单
-     * @return
      */
     private Request getRequest(String url, Map<String, String> params) {
         //可以从这么划分get和post请求，暂时只支持post
