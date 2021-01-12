@@ -298,7 +298,10 @@ public class HttpUtils {
             } else if (key.equals("key")) {
                 continue;
             }
-            builder.add(key, value);
+            String finalValue = value.replace("+", "%2B")
+                    .replace("\n", "")
+                    .replace("\\s", "");
+            builder.add(key, finalValue);
         }
         requestBody = builder.build();
         return requestBody;
